@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_hello_world/viewmodel/main_srceen_model.dart';
 
-import '../main_screen.dart';
+import '../screen/main.dart';
 
 class ProviderConfig {
   static ProviderConfig _instance;

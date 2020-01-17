@@ -1,34 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'config/provider_config.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '专业清洁服务',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SplashPage(),
-      routes: {},
-    );
-  }
-}
+import 'package:web_hello_world/config/provider_config.dart';
 
 class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Timer(Duration(seconds: 2),
           () {
-            Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => ProviderConfig.getInstance().getMainPage()));
+        Navigator.of(context).pushReplacement(new MaterialPageRoute(
+            builder: (BuildContext context) => ProviderConfig.getInstance().getMainPage()));
       },
     );
     return Scaffold(
@@ -51,5 +34,3 @@ class SplashPage extends StatelessWidget {
     );
   }
 }
-
-
