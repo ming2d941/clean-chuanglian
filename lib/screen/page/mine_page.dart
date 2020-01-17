@@ -15,11 +15,6 @@ class _MinePageState extends State<MinePage> {
   double _width;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   bool isExpanded = false;
-  void _expand() {
-    setState(() {
-      isExpanded ? isExpanded = false : isExpanded = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,292 +28,27 @@ class _MinePageState extends State<MinePage> {
         width: _width,
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("@@@@mine"),
-            ),
-            // Padding widget
-            new Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            SizedBox(
+              width: _width,
+              height: _height / 6,
               child: Container(
-                alignment: Alignment.topLeft,
-                child: new Text('222'),
+                decoration: BoxDecoration(color: Color(0x2200ff00)),
+                alignment: Alignment.centerLeft,
+                child: Text('未确认订单'),
               ),
             ),
-            expandList(),
+            SizedBox(
+              width: _width,
+              height: _height / 6,
+              child: Container(
+                decoration: BoxDecoration(color: Color(0x22ff0000)),
+                alignment: Alignment.centerLeft,
+                child: Text('全部订单'),
+              ),
+            ),
           ]),
         ),
       ),
     );
   }
-
-  Widget expandList() {
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
-      child: AnimatedCrossFade(
-        firstChild: GridView.count(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          crossAxisCount: 4,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pushNamed(ELECTRONICS_ITEM_LIST);
-                    print('Routing to Electronics item list');
-                  },
-                  child: Image.asset(
-                    'assets/images/gadget.png',
-                    height: _height / 12,
-                    width: _width / 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    "Electronics",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(PROPERTIES_ITEM_LIST);
-                      print('Routing to Properties item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/house.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Properties",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(JOBS_ITEM_LIST);
-                      print('Routing to Jobs item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/job.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Jobs",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      print('Routing to Furniture item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/sofa.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Furniture",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        secondChild: GridView.count(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          crossAxisCount: 4,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pushNamed(ELECTRONICS_ITEM_LIST);
-                    print('Routing to Electronics item list');
-                  },
-                  child: Image.asset(
-                    'assets/images/gadget.png',
-                    height: _height / 12,
-                    width: _width / 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    "Electronics",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(PROPERTIES_ITEM_LIST);
-                      print('Routing to Properties item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/house.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Properties",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(JOBS_ITEM_LIST);
-                      print('Routing to Jobs item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/job.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Jobs",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(FURNITURE_ITEM_LIST);
-                      print('Routing to Furniture item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/sofa.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Furniture",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pushNamed(CARS_ITEM_LIST);
-                    print('Routing to Cars item list');
-                  },
-                  child: Image.asset(
-                    'assets/images/car.png',
-                    height: _height / 12,
-                    width: _width / 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    "Cars",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pushNamed(BIKES_ITEM_LIST);
-                    print('Routing to Bikes item list');
-                  },
-                  child: Image.asset(
-                    'assets/images/bike.png',
-                    height: _height / 12,
-                    width: _width / 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    "Bikes",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                    onTap: () {
-                      //Navigator.of(context).pushNamed(MOBILES_ITEM_LIST);
-                      print('Routing to Mobiles item list');
-                    },
-                    child: Image.asset(
-                      'assets/images/smartphone.png',
-                      height: _height / 12,
-                      width: _width / 12,
-                    )),
-                Flexible(
-                  child: Text(
-                    "Mobiles",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pushNamed(PETS_ITEM_LIST);
-                    print('Routing to Pets item list');
-                  },
-                  child: Image.asset(
-                    'assets/images/pet.png',
-                    height: _height / 12,
-                    width: _width / 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    "Pets",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        crossFadeState:
-        isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-        duration: kThemeAnimationDuration,
-      ),
-    );
-  }
-
 }

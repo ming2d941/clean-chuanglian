@@ -20,7 +20,7 @@ class CustomProductItem extends StatelessWidget {
       return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            buildImg(Colors.lightGreenAccent, 50, 50),
+            buildImg(Colors.lightGreenAccent, 70, 70),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(10),
@@ -72,7 +72,7 @@ class CustomProductItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              '@@@@ttttt',
+              '规格：180cm x 140cm\n材料：棉\n单价：￥100.0',
               softWrap: true,
             ),
           ],
