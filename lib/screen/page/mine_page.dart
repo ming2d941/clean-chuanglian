@@ -1,4 +1,6 @@
+import 'package:consumer_picker/flutter_jd_address_selector.dart';
 import 'package:flutter/material.dart';
+
 
 class MinePage extends StatefulWidget {
   @override
@@ -37,18 +39,39 @@ class _MinePageState extends State<MinePage> {
                 child: Text('未确认订单'),
               ),
             ),
-            SizedBox(
-              width: _width,
-              height: _height / 6,
-              child: Container(
-                decoration: BoxDecoration(color: Color(0x22ff0000)),
-                alignment: Alignment.centerLeft,
-                child: Text('全部订单'),
+            GestureDetector(
+              child: SizedBox(
+                width: _width,
+                height: _height / 6,
+                child: Container(
+                  decoration: BoxDecoration(color: Color(0x22ff0000)),
+                  alignment: Alignment.centerLeft,
+                  child: Text('全部订单'),
+                ),
               ),
+              onTap: () {
+                _choiceAddressDialog();
+              },
             ),
           ]),
         ),
       ),
     );
+  }
+
+  void _choiceAddressDialog() async {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return JDAddressDialog(
+              onSelected: (province, city, county) {
+                var address = '$province-$city-$county';
+                print('@@@@ ${address}');
+                setState(() {});
+              },
+              title: '选择地址',
+              selectedColor: Colors.red,
+              unselectedColor: Colors.black);
+        });
   }
 }

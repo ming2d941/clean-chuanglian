@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:web_hello_world/config/provider_config.dart';
+import 'package:flutter_signature_view/flutter_signature_view.dart';
+import 'package:web_hello_world/config/ui_style.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -18,9 +21,8 @@ class _CartPageState extends State<CartPage> {
   bool isExpanded = false;
 
   GlobalKey<State<StatefulWidget>> _globalKey;
-
-  /// 已描绘的点
-  List<Offset> _points = <Offset>[];
+  SignatureView _signatureView;
+  bool _isShowClear = true;
 
   @override
   void initState() {
@@ -33,6 +35,24 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
+
+    _signatureView = SignatureView(
+      backgroundColor: Colors.grey[100],
+      penStyle: Paint()
+        ..color = Colors.blue
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 5.0,
+      onSigned: (data) {
+        print("On change $data");
+//        bool isVisible = data.isNotEmpty;
+//        if (isVisible != _isShowClear) {
+//          setState(() {
+//            _isShowClear = isVisible;
+//          });
+//        }
+      },
+    );
+
     return Scaffold(
       backgroundColor: Colors.grey[90],
       key: scaffoldKey,
@@ -47,7 +67,7 @@ class _CartPageState extends State<CartPage> {
                 child: Column(children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("工单"),
+                    child: Text("工单", style: AppTextStyle.title,),
                   ),
                   // Padding widget
                   Padding(
@@ -58,36 +78,60 @@ class _CartPageState extends State<CartPage> {
                           new Text(ProviderConfig.getInstance().content(null)),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      child:
+                      new Text('确认无误，请您签字：'),
+                    ),
+                  ),
+                  SizedBox(
+                    width: _width,
+                    height: _height / 3,
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      decoration: new BoxDecoration(
+                        border:
+                            new Border.all(color: Colors.black38, width: 1),
+                      ),
+                      child: Stack(
+                        children: [
+                          _signatureView,
+                          Visibility(
+                            //!_signatureView.isEmpty nullpoint exception
+                            //https://github.com/flutter/flutter/issues/22029
+                            visible: _isShowClear,
+                            child: GestureDetector(
+                              child: Container(
+                                alignment: Alignment.topRight,
+                                margin: EdgeInsets.fromLTRB(8, 15, 15, 8),
+                                child: Text('clear'),
+                              ),
+                              onTap: _clear,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ]),
               ),
             )),
-            Container(
-              margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
-              alignment: Alignment.topLeft,
-              child: Text(
-                '确认无误，请您签字：',
-              ),
-            ),
-            RepaintBoundary(
-              key: _globalKey,
-              child: SizedBox(
-                width: _width,
-                height: _height / 3,
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  decoration: new BoxDecoration(
-                    border: new Border.all(color: Color(0x99FF0000), width: 1),
-                  ),
-                  child: Stack(
-                    children: [
-                      GestureDetector(
-                        onPanUpdate: (details) => _addPoint(details),
-                        onPanEnd: (details) => _points.add(null),
-                      ),
-                      CustomPaint(painter: BoardPainter(_points)),
-                    ],
-                  ),
-                ),
+            SizedBox(
+              width: _width * 0.9,
+              height: 60,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                decoration: BoxDecoration(color: Colors.greenAccent,
+                    borderRadius: new BorderRadius.only(
+                    topLeft: const Radius.circular(30.0),
+                    bottomLeft: const Radius.circular(30.0),
+                    topRight: const Radius.circular(30.0),
+                    bottomRight: const Radius.circular(30.0))),
+
+                alignment: Alignment.center,
+                child: Text('确定',style: AppTextStyle.text_regular_15),
               ),
             ),
           ],
@@ -96,37 +140,20 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  _addPoint(DragUpdateDetails details) {
-    RenderBox referenceBox = _globalKey.currentContext.findRenderObject();
-    Offset localPosition = referenceBox.globalToLocal(details.globalPosition);
-    double maxW = referenceBox.size.width;
-    double maxH = referenceBox.size.height;
-    print('@@@ $localPosition');
-    // 校验范围
-    if (localPosition.dx <= 0 || localPosition.dy <= 0) return;
-    if (localPosition.dx > maxW || localPosition.dy > maxH) return;
-    setState(() {
-      _points = List.from(_points)..add(localPosition);
-    });
+  void _clear() {
+    _signatureView.clear();
   }
 }
 
-class BoardPainter extends CustomPainter {
-  BoardPainter(this.points);
+class SignatureView1 extends SignatureView {
 
-  final List<Offset> points;
+  SignatureView1({
+    backgroundColor = Colors.white,
+    data,
+    penStyle,
+    onSigned,
+  });
 
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i], points[i + 1], paint);
-      }
-    }
-  }
-
-  bool shouldRepaint(BoardPainter other) => other.points != points;
+  @override
+  bool get isEmpty => key == null || key.currentState == null ? true : super.isEmpty;
 }

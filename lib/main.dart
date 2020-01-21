@@ -41,17 +41,17 @@ class MainScreen extends StatelessWidget {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                title: Text('Home'),
+                title: Text('首页'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.shop),
 //            activeIcon: Icon(Icons.shopp),
-                title: Text('Cart'),
+                title: Text('下单'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(FontAwesome.user_o),
                 activeIcon: Icon(FontAwesome.user),
-                title: Text('Mine'),
+                title: Text('我的'),
               ),
             ],
           ),
