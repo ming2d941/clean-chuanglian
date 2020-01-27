@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:clean_service/config/provider_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:web_hello_world/config/provider_config.dart';
 
 class SplashPage extends StatelessWidget {
   @override

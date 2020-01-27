@@ -1,9 +1,9 @@
+import 'package:clean_service/page/splash_page.dart';
+import 'package:clean_service/viewmodel/main_srceen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:web_hello_world/screen/page/splash_page.dart';
-import 'package:web_hello_world/viewmodel/main_srceen_model.dart';
 
 void main() => runApp(MyApp());
 

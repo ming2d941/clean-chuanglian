@@ -1,8 +1,7 @@
+import 'package:clean_service/viewmodel/cart_model.dart';
+import 'package:clean_service/viewmodel/main_srceen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:web_hello_world/screen/page/cart_page.dart';
-import 'package:web_hello_world/viewmodel/cart_model.dart';
-import 'package:web_hello_world/viewmodel/main_srceen_model.dart';
 
 import '../main.dart';
 

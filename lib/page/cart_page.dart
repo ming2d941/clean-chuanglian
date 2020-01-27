@@ -1,8 +1,7 @@
-import 'package:flutter/gestures.dart';
+import 'package:clean_service/config/provider_config.dart';
+import 'package:clean_service/config/ui_style.dart';
 import 'package:flutter/material.dart';
-import 'package:web_hello_world/config/provider_config.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
-import 'package:web_hello_world/config/ui_style.dart';
 
 class CartPage extends StatefulWidget {
   @override
