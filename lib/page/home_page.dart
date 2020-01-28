@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                                mainScreenModel.customerController.current.info.name??'未知'
+                                mainScreenModel.customerController.current.name??'未知'
 //                                locations[selectedLocationIndex],
 //                                style: dropdownMenuLabel,
                             ),
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                         <PopupMenuItem<int>>[
                           PopupMenuItem(
                             child: Text(
-                                mainScreenModel.customerController.allCustomer[0].info.name
+                                mainScreenModel.customerController.allCustomer[0].name
 //                                locations[0],
 //                                style: dropdownMenuItem,
                             ),
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           PopupMenuItem(
                             child: Text(
-                                mainScreenModel.customerController.allCustomer[1].info.name
+                                mainScreenModel.customerController.allCustomer[1].name
 //                                locations[1],
 //                                style: dropdownMenuItem,
                             ),

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'customer_info.dart';
 
 class CartModel extends ChangeNotifier {
-  Map<CustomerInfo, List<Product>> lists;
+  Map<Customer, List<Product>> lists;
 
   CartModel() {
-    lists = Map<CustomerInfo, List<Product>>();
+    lists = Map<Customer, List<Product>>();
   }
 
-  add(CustomerInfo customerInfo, Product product) {
+  add(Customer customerInfo, Product product) {
     if (lists.containsKey(customerInfo)) {
       lists[customerInfo]?.forEach((productItem) {
         if (product == productItem) {
@@ -24,7 +24,7 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  remove(CustomerInfo customerInfo, Product product) {
+  remove(Customer customerInfo, Product product) {
     if (lists.containsKey(customerInfo)) {
       lists[customerInfo]?.forEach((productItem) {
         if (product == productItem) {

@@ -19,44 +19,51 @@ class MainScreenModel extends ChangeNotifier {
   List<Widget> pages;
 
   MainScreenModel() {
-    List<CustomerInfo> bigCustomer = List();
-    bigCustomer.add(CustomerInfo()..id = 0..name = '外科楼'..nextInfo = (List<CustomerInfo>()
-      ..add(CustomerInfo()..id = 0..name = '9病区')
-      ..add(CustomerInfo()..id = 1..name = '8病区')
-      ..add(CustomerInfo()..id = 2..name = '7病区')
-      ..add(CustomerInfo()..id = 3..name = 'ICU')
-      ..add(CustomerInfo()..id = 4..name = '六区')
-      ..add(CustomerInfo()..id = 5..name = '手术室')
-      ..add(CustomerInfo()..id = 6..name = '康复室')
-    ));
-    bigCustomer.add(CustomerInfo()..id = 1..name = '内科楼'..nextInfo = (List<CustomerInfo>()
-      ..add(CustomerInfo()..id = 0..name = '1病区')
-      ..add(CustomerInfo()..id = 1..name = '2病区')
-      ..add(CustomerInfo()..id = 2..name = '3病区')
-      ..add(CustomerInfo()..id = 3..name = '4病区')
-      ..add(CustomerInfo()..id = 4..name = '5病区')
-    ));
+    Customer naoKe = Customer()..id = 0..name = '脑科'..type = CustomerType.bigCustomer;
+    Customer personal = Customer()..id = 1..name = '个人'..type = CustomerType.personal;
 
-    bigCustomer.add(CustomerInfo()..id = 2..name = '急诊楼'..nextInfo = (List<CustomerInfo>()
-      ..add(CustomerInfo()..id = 0..name = '1楼门诊')
-      ..add(CustomerInfo()..id = 1..name = '1楼急诊')
-      ..add(CustomerInfo()..id = 2..name = '内镜室')
-      ..add(CustomerInfo()..id = 3..name = '11病区')
-      ..add(CustomerInfo()..id = 4..name = '12病区')
-      ..add(CustomerInfo()..id = 5..name = '13病区')
-      ..add(CustomerInfo()..id = 6..name = '连廊')
+    List<Customer> bigCustomer = List();
+    Customer waiKe = Customer()..id = 0..name = '外科楼'..parent = naoKe;
+    bigCustomer.add(
+        waiKe..nextInfo = (List<Customer>()
+      ..add(Customer()..id = 0..name = '9病区'..parent = waiKe)
+      ..add(Customer()..id = 1..name = '8病区'..parent = waiKe)
+      ..add(Customer()..id = 2..name = '7病区'..parent = waiKe)
+      ..add(Customer()..id = 3..name = 'ICU'..parent = waiKe)
+      ..add(Customer()..id = 4..name = '六区'..parent = waiKe)
+      ..add(Customer()..id = 5..name = '手术室'..parent = waiKe)
+      ..add(Customer()..id = 6..name = '康复室'..parent = waiKe)
     ));
-    bigCustomer.add(CustomerInfo()..id = 3..name = '儿科/办公楼'..nextInfo = (List<CustomerInfo>()
-      ..add(CustomerInfo()..id = 0..name = '儿科')
-      ..add(CustomerInfo()..id = 1..name = '办公楼')
+    Customer neiKe = Customer()..id = 1..name = '内科楼';
+    bigCustomer.add(neiKe..nextInfo = (List<Customer>()
+      ..add(Customer()..id = 0..name = '1病区'..parent = neiKe)
+      ..add(Customer()..id = 1..name = '2病区'..parent = neiKe)
+      ..add(Customer()..id = 2..name = '3病区'..parent = neiKe)
+      ..add(Customer()..id = 3..name = '4病区'..parent = neiKe)
+      ..add(Customer()..id = 4..name = '5病区'..parent = neiKe)
+    ));
+    Customer jiZhen = Customer()..id = 2..name = '急诊楼';
+    bigCustomer.add(jiZhen..nextInfo = (List<Customer>()
+      ..add(Customer()..id = 0..name = '1楼门诊'..parent = jiZhen)
+      ..add(Customer()..id = 1..name = '1楼急诊'..parent = jiZhen)
+      ..add(Customer()..id = 2..name = '内镜室'..parent = jiZhen)
+      ..add(Customer()..id = 3..name = '11病区'..parent = jiZhen)
+      ..add(Customer()..id = 4..name = '12病区'..parent = jiZhen)
+      ..add(Customer()..id = 5..name = '13病区'..parent = jiZhen)
+      ..add(Customer()..id = 6..name = '连廊'..parent = jiZhen)
+    ));
+    Customer banGong = Customer()..id = 3..name = '儿科/办公楼';
+    bigCustomer.add(banGong..nextInfo = (List<Customer>()
+      ..add(Customer()..id = 0..name = '儿科'..parent = banGong)
+      ..add(Customer()..id = 1..name = '办公楼'..parent = banGong)
     ));
 
     pages = [HomePage(), CartPage(), MinePage()];
 
     customerController = CustomerController();
     customerController.allCustomer = List<Customer>()
-      ..add(Personal()..info = (CustomerInfo()..id = 0..name = '个人'))
-      ..add(BigCustomer()..info = (CustomerInfo()..id = 1..name = '脑科'..nextInfo = bigCustomer));
+      ..add(naoKe..nextInfo = bigCustomer)
+      ..add(personal);
 
     _cartModel = CartModel();
   }
@@ -66,9 +73,9 @@ class MainScreenModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addProduct(List<CustomerInfo> customerInfo, Product product) {
-    customerInfo.forEach((customerInfo) {
-      _cartModel.add(customerInfo, product);
+  addProduct(List<Customer> Customer, Product product) {
+    Customer.forEach((Customer) {
+      _cartModel.add(Customer, product);
     });
     notifyListeners();
   }

@@ -1,42 +1,34 @@
 import 'package:flutter/material.dart';
 
-abstract class Customer {
-
-  CustomerType get type;
-
-  CustomerInfo info;
-}
-
-class  CustomerInfo {
+class  Customer {
   int id;
 
   String name;
 
-  List<CustomerInfo> nextInfo;
+  Customer parent;
 
-  @override
-  bool operator ==(Object other) {
-    return other is CustomerInfo && other.id == this.id
-    && (other.name == this.name);
+  List<Customer> nextInfo;
+
+  CustomerType _type;
+
+
+  CustomerType get type => _type??parent?._type;
+
+  set type(CustomerType value) {
+    _type = value;
   }
 
   @override
-  int get hashCode => hashValues(id, name);
+  bool operator ==(Object other) {
+    return other is Customer && other.id == this.id
+    && (other.name == this.name) && (parent == other.parent);
+  }
+
+  @override
+  int get hashCode => hashValues(id, name, parent);
 
   @override
   String toString() => 'id: $id ;name: $name';
-}
-
-class Personal extends Customer {
-
-  @override
-  CustomerType get type => CustomerType.personal;
-}
-
-class BigCustomer extends Customer {
-
-  @override
-  CustomerType get type => CustomerType.bigCustomer;
 }
 
 enum CustomerType {
