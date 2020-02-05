@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
-class  Customer {
+class Customer {
   int id;
 
   String name;
 
+  bool isSelected = false;
+
   Customer parent;
 
-  List<Customer> nextInfo;
+  List<Customer> children;
 
   CustomerType _type;
 
-
-  CustomerType get type => _type??parent?._type;
+  CustomerType get type => _type ?? parent?._type;
 
   set type(CustomerType value) {
     _type = value;
@@ -20,8 +21,10 @@ class  Customer {
 
   @override
   bool operator ==(Object other) {
-    return other is Customer && other.id == this.id
-    && (other.name == this.name) && (parent == other.parent);
+    return other is Customer &&
+        other.id == this.id &&
+        (other.name == this.name) &&
+        (parent == other.parent);
   }
 
   @override
@@ -29,6 +32,16 @@ class  Customer {
 
   @override
   String toString() => 'id: $id ;name: $name';
+
+  List<String> fullNames() {
+    List<String> list = List<String>();
+    Customer customer = this;
+    do {
+      list.insert(0, customer.name);
+      customer = customer.parent;
+    } while (customer != null);
+    return list;
+  }
 }
 
 enum CustomerType {

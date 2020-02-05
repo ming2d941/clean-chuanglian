@@ -1,7 +1,8 @@
-import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
+import 'package:clean_service/viewmodel/cart_model.dart';
+import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signature_view/flutter_signature_view.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -9,150 +10,324 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  static List imgList = [
-    'https://gcaeco.vn/static/media/images/shop/2018_11_09/319501224421579295553582717161942568402944n-1541774030.jpg',
-    'https://image3.tienphong.vn/665x449/Uploaded/2019/uqvppivp/2016_04_28/rauantoan_rjoj.jpg',
-    'https://media.ex-cdn.com/EXP/media.phunutoday.vn/files/news/2017/09/18/thuc-don-danh-cho-nguoi-bi-viem-da-di-ung-014122.jpg'
-  ];
-  double _height;
-  double _width;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isExpanded = false;
-
-  GlobalKey<State<StatefulWidget>> _globalKey;
-  SignatureView _signatureView;
-  bool _isShowClear = true;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _globalKey = GlobalKey();
-  }
-
   @override
   Widget build(BuildContext context) {
-    _height = MediaQuery.of(context).size.height;
-    _width = MediaQuery.of(context).size.width;
+    return Consumer<CartModel>(builder: (context, cartModel, child) {
+      return Scaffold(
+          backgroundColor: Colors.grey[90],
+          body: _isCartEmpty(cartModel)
+              ? _showCartEmpty(cartModel)
+              : _showCartContent(cartModel));
+    });
+  }
 
-    _signatureView = SignatureView(
-      backgroundColor: Colors.grey[100],
-      penStyle: Paint()
-        ..color = Colors.blue
-        ..strokeCap = StrokeCap.round
-        ..strokeWidth = 5.0,
-      onSigned: (data) {
-        print("On change $data");
-//        bool isVisible = data.isNotEmpty;
-//        if (isVisible != _isShowClear) {
-//          setState(() {
-//            _isShowClear = isVisible;
-//          });
-//        }
-      },
+  _isCartEmpty(CartModel cartModel) {
+    return cartModel == null ||
+        cartModel.allCartInfoMap == null ||
+        cartModel.allCartInfoMap.length <= 0;
+  }
+
+  _showCartEmpty(CartModel cartModel) {
+    return Center(
+      child: Text('No Data!!!'),
     );
+  }
 
-    return Scaffold(
-      backgroundColor: Colors.grey[90],
-      key: scaffoldKey,
-      body: Container(
-        height: _height,
-        width: _width,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: Scrollbar(
-              child: SingleChildScrollView(
-                child: Column(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("工单", style: AppTextStyle.title,),
-                  ),
-                  // Padding widget
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                    child: Container(
-                      alignment: Alignment.topLeft,
-                      child:
-                          new Text(ProviderConfig.getInstance().content(null)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
-                    child: Container(
-                      alignment: Alignment.topLeft,
-                      child:
-                      new Text('确认无误，请您签字：'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: _width,
-                    height: _height / 3,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      decoration: new BoxDecoration(
-                        border:
-                            new Border.all(color: Colors.black38, width: 1),
+  _showCartContent(CartModel cartModel) {
+    return Column(
+      children: <Widget>[
+        Expanded(
+            child: ListView.builder(
+                itemCount: cartModel.allCartInfoMap.length,
+                itemBuilder: (context, index) {
+                  return _cartItem(cartModel, index);
+                })),
+        Material(
+          elevation: 20.0,
+          child: Container(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            height: 70,
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  child: Row(
+                    children: <Widget>[
+                      cartModel.isAllSelected
+                          ? Icon(Icons.check_circle, color: Colors.red)
+                          : Icon(Icons.radio_button_unchecked,
+                              color: Colors.grey),
+                      SizedBox(width: 10.0),
+                      Text(
+                        '全选',
                       ),
-                      child: Stack(
-                        children: [
-                          _signatureView,
-                          Visibility(
-                            //!_signatureView.isEmpty nullpoint exception
-                            //https://github.com/flutter/flutter/issues/22029
-                            visible: _isShowClear,
-                            child: GestureDetector(
-                              child: Container(
-                                alignment: Alignment.topRight,
-                                margin: EdgeInsets.fromLTRB(8, 15, 15, 8),
-                                child: Text('clear'),
-                              ),
-                              onTap: _clear,
+                    ],
+                  ),
+                  onTap: () => _selectAllPress(cartModel),
+                ),
+                Spacer(),
+                GestureDetector(
+                  child: Container(
+                      height: 40,
+                      width: 70,
+                      margin: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                          color: Colors.greenAccent,
+                          borderRadius: new BorderRadius.only(
+                              topLeft: const Radius.circular(21.0),
+                              bottomLeft: const Radius.circular(21.0),
+                              topRight: const Radius.circular(21.0),
+                              bottomRight: const Radius.circular(21.0))),
+                      alignment: Alignment.center,
+                      child: Text('下单', style: AppTextStyle.text_regular_15)),
+                  onTap: () => _goOrderPage(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _cartItem(CartModel cartModel, int index) {
+    var customer = cartModel.allCartInfoMap.keys.elementAt(index);
+    List<Product> products = cartModel.allCartInfoMap[customer];
+    var nameList = customer.fullNames();
+
+    var title = () {
+      List<Widget> titleChildren = List<Widget>();
+      List<Widget> titleText = nameList.map((name) {
+        var index = nameList.indexOf(name);
+        return Row(
+          children: <Widget>[
+            Text(name),
+            index != nameList.length - 1
+                ? Icon(
+                    Icons.arrow_right,
+                    color: Colors.grey,
+                  )
+                : Container(),
+          ],
+        );
+      }).toList();
+      titleChildren.add(
+        GestureDetector(
+          child: Container(
+            margin: EdgeInsets.only(right: 10),
+            child: customer.isSelected
+                ? Icon(Icons.check_circle, color: Colors.red)
+                : Icon(Icons.radio_button_unchecked, color: Colors.grey),
+          ),
+          onTap: () => _selectCustomer(cartModel, customer),
+        ),
+      );
+      titleChildren.addAll(titleText);
+      return Container(
+        height: 45,
+        child: Row(children: titleChildren),
+      );
+    };
+
+    var item = (Product product) {
+      return Dismissible(
+        key: Key(customer.toString() + product.toString()),
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction) {
+          cartModel.remove(customer, product);
+        },
+        // Show a red background as the item is swiped away.
+        background: Container(
+          padding: EdgeInsets.only(right: 20),
+          alignment: Alignment.centerRight,
+          color: Colors.red,
+          child: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(top: 5, bottom: 5),
+          child: Row(
+            children: <Widget>[
+              GestureDetector(
+                child: Container(
+                  margin: EdgeInsets.only(right: 10),
+                  child: product.isSelected
+                      ? Icon(Icons.check_circle, color: Colors.red)
+                      : Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                ),
+                onTap: () => _selectProduct(cartModel, customer, product),
+              ),
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+//                  image: CachedNetworkImageProvider(images[1]),
+                  image: AssetImage('assets/images/gelian.jpeg'),
+                  fit: BoxFit.cover,
+                )),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: Text(
+                              product.name,
+                              overflow: TextOverflow.fade,
+                              softWrap: true,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                           ),
+                          Container(
+                            width: 50,
+                            child: IconButton(
+                              onPressed: () {
+                                print("Button Pressed");
+                              },
+                              color: Colors.red,
+                              icon: Icon(Icons.delete),
+                              iconSize: 20,
+                            ),
+                          )
                         ],
                       ),
-                    ),
+                      Row(
+                        children: <Widget>[
+                          Text("Price: "),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '\$200',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w300),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text("Sub Total: "),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text('\$400',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.orange,
+                              ))
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            "Ships Free",
+                            style: TextStyle(color: Colors.orange),
+                          ),
+                          Spacer(),
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {},
+                                splashColor: Colors.redAccent.shade200,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Icon(
+                                      Icons.remove,
+                                      color: Colors.redAccent,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('2'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                splashColor: Colors.lightBlue,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.green,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                ]),
-              ),
-            )),
-            SizedBox(
-              width: _width * 0.9,
-              height: 60,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                decoration: BoxDecoration(color: Colors.greenAccent,
-                    borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(30.0),
-                    bottomLeft: const Radius.circular(30.0),
-                    topRight: const Radius.circular(30.0),
-                    bottomRight: const Radius.circular(30.0))),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    };
 
-                alignment: Alignment.center,
-                child: Text('确定',style: AppTextStyle.text_regular_15),
-              ),
-            ),
-          ],
+    List<Widget> children = List<Widget>();
+    children.add(title());
+    products.forEach((product) {
+      children.add(item(product));
+    });
+
+    return Card(
+      margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      child: Padding(
+        padding: EdgeInsets.all(7),
+        child: Column(
+          children: children,
         ),
       ),
     );
   }
 
-  void _clear() {
-    _signatureView.clear();
+  _goOrderPage(BuildContext context) {}
+
+  _selectAllPress(CartModel cartModel) {
+    cartModel.isAllSelected = !cartModel.isAllSelected;
+    print('${cartModel.isAllSelected}');
+    cartModel.isAllSelected ? cartModel.selectAll() : cartModel.unSelectAll();
   }
-}
 
-class SignatureView1 extends SignatureView {
+  _selectCustomer(CartModel cartMode, Customer customer) {
+    cartMode.handleCustomerSelected(customer);
+  }
 
-  SignatureView1({
-    backgroundColor = Colors.white,
-    data,
-    penStyle,
-    onSigned,
-  });
-
-  @override
-  bool get isEmpty => key == null || key.currentState == null ? true : super.isEmpty;
+  _selectProduct(CartModel cartMode, Customer customer, Product product) {
+    product.isSelected = !product.isSelected;
+    product.isSelected
+        ? cartMode.select(customer, product)
+        : cartMode.unSelect(customer, product);
+  }
 }
