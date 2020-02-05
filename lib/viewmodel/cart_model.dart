@@ -105,10 +105,12 @@ class CartModel extends ChangeNotifier {
         products = List<Product>();
         allCartInfoMap[customerInfo] = products;
       }
-      if (products.remove(product)) {
-        product.count++;
+      int index = products.indexOf(product);
+      if (index >= 0) {
+        products[index].count++;
+      } else {
+        products.add(product);
       }
-      products.add(product);
     } else {
       allCartInfoMap[customerInfo] = List<Product>()..add(product);
     }

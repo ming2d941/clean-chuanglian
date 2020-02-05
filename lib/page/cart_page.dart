@@ -160,8 +160,8 @@ class _CartPageState extends State<CartPage> {
                 onTap: () => _selectProduct(cartModel, customer, product),
               ),
               Container(
-                width: 120,
-                height: 120,
+                width: 85,
+                height: 85,
                 decoration: BoxDecoration(
                     image: DecorationImage(
 //                  image: CachedNetworkImageProvider(images[1]),
@@ -174,50 +174,23 @@ class _CartPageState extends State<CartPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                        product.name,
+                        overflow: TextOverflow.fade,
+                        softWrap: true,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 15),
+                      ),),
+
                       Row(
                         children: <Widget>[
-                          Flexible(
-                            child: Text(
-                              product.name,
-                              overflow: TextOverflow.fade,
-                              softWrap: true,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 15),
-                            ),
-                          ),
-                          Container(
-                            width: 50,
-                            child: IconButton(
-                              onPressed: () {
-                                print("Button Pressed");
-                              },
-                              color: Colors.red,
-                              icon: Icon(Icons.delete),
-                              iconSize: 20,
-                            ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text("Price: "),
+                          Text("预计送达时间:"),
                           SizedBox(
                             width: 5,
                           ),
-                          Text(
-                            '\$200',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w300),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text("Sub Total: "),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text('\$400',
+                          Text('2020-2-8',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
@@ -227,15 +200,11 @@ class _CartPageState extends State<CartPage> {
                       ),
                       Row(
                         children: <Widget>[
-                          Text(
-                            "Ships Free",
-                            style: TextStyle(color: Colors.orange),
-                          ),
                           Spacer(),
                           Row(
                             children: <Widget>[
                               InkWell(
-                                onTap: () {},
+                                onTap: () {_decraseCount(cartModel, customer, product);},
                                 splashColor: Colors.redAccent.shade200,
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -245,7 +214,7 @@ class _CartPageState extends State<CartPage> {
                                     padding: const EdgeInsets.all(6.0),
                                     child: Icon(
                                       Icons.remove,
-                                      color: Colors.redAccent,
+                                      color: product.count > 1 ? Colors.redAccent : Colors.grey,
                                       size: 20,
                                     ),
                                   ),
@@ -257,14 +226,14 @@ class _CartPageState extends State<CartPage> {
                               Card(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text('2'),
+                                  child: Text('${product.count}'),
                                 ),
                               ),
                               SizedBox(
                                 width: 4,
                               ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {_incraseCount(cartModel, customer, product);},
                                 splashColor: Colors.lightBlue,
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -316,7 +285,6 @@ class _CartPageState extends State<CartPage> {
 
   _selectAllPress(CartModel cartModel) {
     cartModel.handleSelectAll();
-
   }
 
   _selectCustomer(CartModel cartMode, Customer customer) {
@@ -325,5 +293,15 @@ class _CartPageState extends State<CartPage> {
 
   _selectProduct(CartModel cartMode, Customer customer, Product product) {
     cartMode.selectProduct(customer, product);
+  }
+
+  void _incraseCount(CartModel cartModel, Customer customer, Product product) {
+    cartModel.add(customer, product);
+  }
+
+  void _decraseCount(CartModel cartModel, Customer customer, Product product) {
+    if (product.count > 1) {
+      cartModel.remove(customer, product);
+    }
   }
 }

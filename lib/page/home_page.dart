@@ -113,12 +113,12 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
                 child: CustomProductItem(),
                 onTap: () {
-                  _cartPressed(context, model, Product()..id = 0..type=ProductType.GeLian);
+                  _cartPressed(context, model, model.productController.allProduct[0]);
                 }),
             GestureDetector(
                 child: CustomProductItem(),
                 onTap: () {
-                  _cartPressed(context, model, Product()..id = 1..type=ProductType.ChuangLian);
+                  _cartPressed(context, model, model.productController.allProduct[1]);
                 }),
             CustomProductItem(),
             CustomProductItem(),

@@ -2,6 +2,7 @@ import 'package:clean_service/page/cart_page.dart';
 import 'package:clean_service/page/home_page.dart';
 import 'package:clean_service/page/mine_page.dart';
 import 'package:clean_service/viewmodel/customer_controller.dart';
+import 'package:clean_service/viewmodel/product_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'customer_info.dart';
@@ -10,6 +11,8 @@ import 'customer_info.dart';
 class MainScreenModel extends ChangeNotifier {
 
   CustomerController customerController;
+
+  ProductController productController;
 
   int _currentTabIndex = 0;
 
@@ -62,6 +65,7 @@ class MainScreenModel extends ChangeNotifier {
       ..add(naoKe..children = bigCustomer)
       ..add(personal);
 
+    productController = ProductController();
   }
 
   setCustomerIndex(int index) {
