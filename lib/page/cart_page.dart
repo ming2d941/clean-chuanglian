@@ -153,7 +153,7 @@ class _CartPageState extends State<CartPage> {
               GestureDetector(
                 child: Container(
                   margin: EdgeInsets.only(right: 10),
-                  child: product.isSelected
+                  child: cartModel.isSelect(customer, product)
                       ? Icon(Icons.check_circle, color: Colors.red)
                       : Icon(Icons.radio_button_unchecked, color: Colors.grey),
                 ),
