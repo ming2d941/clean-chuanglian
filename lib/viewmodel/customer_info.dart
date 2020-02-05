@@ -5,8 +5,6 @@ class Customer {
 
   String name;
 
-  bool isSelected = false;
-
   Customer parent;
 
   List<Customer> children;

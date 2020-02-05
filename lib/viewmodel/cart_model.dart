@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:collection/collection.dart';
 import 'customer_info.dart';
 
 class CartModel extends ChangeNotifier {
@@ -12,12 +12,16 @@ class CartModel extends ChangeNotifier {
     selectedCartInfoMap = Map<Customer, List<Product>>();
   }
 
-  handleCustomerSelected(Customer customerInfo) {
-    customerInfo.isSelected = !customerInfo.isSelected;
+  isSelectCustomer(Customer customer) {
+    return selectedCartInfoMap.containsKey(customer)
+        && ListEquality().equals(selectedCartInfoMap[customer], allCartInfoMap[customer]);
+  }
+
+  selectAllProductOfCustomer(Customer customerInfo) {
+    bool isCurSelected = isSelectCustomer(customerInfo);
 
     selectedCartInfoMap.remove(customerInfo);
-
-    if (customerInfo.isSelected) {
+    if (!isCurSelected) {
       selectedCartInfoMap[customerInfo] = List<Product>();
       allCartInfoMap[customerInfo].forEach((product) {
         product.isSelected = true;
@@ -45,8 +49,7 @@ class CartModel extends ChangeNotifier {
       selectedCartInfoMap[customerInfo] = List<Product>()..add(product);
     }
     product.isSelected = true;
-    customerInfo.isSelected = selectedCartInfoMap[customerInfo].length ==
-        allCartInfoMap[customerInfo].length;
+
     notifyListeners();
   }
 
@@ -55,8 +58,6 @@ class CartModel extends ChangeNotifier {
       selectedCartInfoMap[customerInfo]
           .removeWhere((element) => product == element);
       product.isSelected = false;
-      customerInfo.isSelected = selectedCartInfoMap[customerInfo].length ==
-          allCartInfoMap[customerInfo].length;
       if (selectedCartInfoMap[customerInfo].length == 0) {
         selectedCartInfoMap.remove(customerInfo);
       }
@@ -69,7 +70,6 @@ class CartModel extends ChangeNotifier {
   selectAll() {
     selectedCartInfoMap.clear();
     allCartInfoMap.forEach((customer, products) {
-      customer.isSelected = true;
       products.forEach((element) {
         element.isSelected = true;
       });
@@ -81,7 +81,6 @@ class CartModel extends ChangeNotifier {
 
   unSelectAll() {
     allCartInfoMap.forEach((customer, products) {
-      customer.isSelected = false;
       products.forEach((product) {
         product.isSelected = false;
       });
@@ -141,6 +140,13 @@ class CartModel extends ChangeNotifier {
     isAllSelected = !isAllSelected;
     print('$isAllSelected');
     isAllSelected ? selectAll() : unSelectAll();
+  }
+
+  void selectProduct(Customer customer, Product product) {
+    product.isSelected = !product.isSelected;
+    product.isSelected
+        ? select(customer, product)
+        : unSelect(customer, product);
   }
 }
 

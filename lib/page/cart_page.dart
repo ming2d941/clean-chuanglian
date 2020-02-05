@@ -114,7 +114,7 @@ class _CartPageState extends State<CartPage> {
         GestureDetector(
           child: Container(
             margin: EdgeInsets.only(right: 10),
-            child: customer.isSelected
+            child: cartModel.isSelectCustomer(customer)
                 ? Icon(Icons.check_circle, color: Colors.red)
                 : Icon(Icons.radio_button_unchecked, color: Colors.grey),
           ),
@@ -320,13 +320,10 @@ class _CartPageState extends State<CartPage> {
   }
 
   _selectCustomer(CartModel cartMode, Customer customer) {
-    cartMode.handleCustomerSelected(customer);
+    cartMode.selectAllProductOfCustomer(customer);
   }
 
   _selectProduct(CartModel cartMode, Customer customer, Product product) {
-    product.isSelected = !product.isSelected;
-    product.isSelected
-        ? cartMode.select(customer, product)
-        : cartMode.unSelect(customer, product);
+    cartMode.selectProduct(customer, product);
   }
 }
