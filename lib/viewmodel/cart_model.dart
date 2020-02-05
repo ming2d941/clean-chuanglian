@@ -60,6 +60,7 @@ class CartModel extends ChangeNotifier {
       if (selectedCartInfoMap[customerInfo].length == 0) {
         selectedCartInfoMap.remove(customerInfo);
       }
+      isAllSelected = selectedCartInfoMap.length == allCartInfoMap.length;
     }
 
     notifyListeners();
@@ -134,6 +135,12 @@ class CartModel extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void handleSelectAll() {
+    isAllSelected = !isAllSelected;
+    print('$isAllSelected');
+    isAllSelected ? selectAll() : unSelectAll();
   }
 }
 

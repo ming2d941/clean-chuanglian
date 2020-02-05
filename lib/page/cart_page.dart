@@ -315,9 +315,8 @@ class _CartPageState extends State<CartPage> {
   _goOrderPage(BuildContext context) {}
 
   _selectAllPress(CartModel cartModel) {
-    cartModel.isAllSelected = !cartModel.isAllSelected;
-    print('${cartModel.isAllSelected}');
-    cartModel.isAllSelected ? cartModel.selectAll() : cartModel.unSelectAll();
+    cartModel.handleSelectAll();
+
   }
 
   _selectCustomer(CartModel cartMode, Customer customer) {
