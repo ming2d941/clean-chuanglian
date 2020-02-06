@@ -118,25 +118,20 @@ class CartModel extends ChangeNotifier {
   }
 
   remove(Customer customerInfo, Product product) {
+    if (selectedCartInfoMap.containsKey(customerInfo)) {
+      selectedCartInfoMap[customerInfo].removeWhere((element) => product == element);
+      if (selectedCartInfoMap[customerInfo].length == 0) {
+        selectedCartInfoMap.remove(customerInfo);
+      }
+    }
     if (allCartInfoMap.containsKey(customerInfo)) {
-      allCartInfoMap[customerInfo].removeWhere((element) {
-        if (product == element) {
-          if (product.count > 1) {
-            product.count--;
-            return false;
-          } else {
-            return true;
-          }
-        } else {
-          return false;
-        }
-      });
+      allCartInfoMap[customerInfo].removeWhere((element) => product == element);
       if (allCartInfoMap[customerInfo].length == 0) {
         allCartInfoMap.remove(customerInfo);
       }
+      checkAllSelected();
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   bool get isAllSelected => _isAllSelected;
@@ -144,6 +139,13 @@ class CartModel extends ChangeNotifier {
   void handleSelectAll() {
     _isAllSelected = !_isAllSelected;
     _isAllSelected ? _selectAll() : _unSelectAll();
+  }
+
+  void decrease(Product product) {
+    if (product.count > 1) {
+      product.count--;
+      notifyListeners();
+    }
   }
 }
 
@@ -171,6 +173,15 @@ class Product {
 
   set name(String value) {
     _name = value;
+  }
+
+
+  ImageProvider get image {
+    if (type == ProductType.ChuangLian) {
+      return AssetImage('assets/images/chuanglian.jpeg');
+    } else {
+      return AssetImage('assets/images/gelian.jpeg');
+    }
   }
 
   @override

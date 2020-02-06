@@ -165,7 +165,7 @@ class _CartPageState extends State<CartPage> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
 //                  image: CachedNetworkImageProvider(images[1]),
-                  image: AssetImage('assets/images/gelian.jpeg'),
+                  image: product.image,
                   fit: BoxFit.cover,
                 )),
               ),
@@ -300,8 +300,6 @@ class _CartPageState extends State<CartPage> {
   }
 
   void _decraseCount(CartModel cartModel, Customer customer, Product product) {
-    if (product.count > 1) {
-      cartModel.remove(customer, product);
-    }
+    cartModel.decrease(product);
   }
 }
