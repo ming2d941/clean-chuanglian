@@ -29,6 +29,11 @@ dependencies:
   expandable: ^4.0.2
   flutter_signature_view: ^1.1.1
   cached_network_image: ^2.0.0
+  sqflite: ^1.2.0
+  path: ^1.6.4
+  path_provider: ^1.6.0
+  pdf: ^1.4.1
+  appspector: ^0.1.0
 #  address_picker: ^0.0.1
 #  flutter_jd_address_selector:
 #    git:

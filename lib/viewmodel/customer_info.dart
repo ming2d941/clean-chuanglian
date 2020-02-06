@@ -29,7 +29,7 @@ class Customer {
   int get hashCode => hashValues(id, name, parent);
 
   @override
-  String toString() => 'id: $id ;name: $name';
+  String toString() => 'id: $id ;name: $name ; parent: ${parent == null? 'null' : parent.name}';
 
   List<String> fullNames() {
     List<String> list = List<String>();
@@ -46,3 +46,6 @@ enum CustomerType {
   personal,
   bigCustomer,
 }
+
+
+

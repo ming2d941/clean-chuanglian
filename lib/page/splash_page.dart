@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Timer(
-      Duration(seconds: 2),
+    ProviderConfig.getInstance().preloadDataController.preLoadData();
+    Timer(Duration(seconds: 2),
       () {
         Navigator.of(context).pushReplacement(new MaterialPageRoute(
             builder: (BuildContext context) =>

@@ -1,11 +1,24 @@
+import 'package:appspector/appspector.dart';
 import 'package:clean_service/page/splash_page.dart';
 import 'package:clean_service/viewmodel/main_srceen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-void main() => runApp(MyApp());
+void main() {
+//  TestWidgetsFlutterBinding.ensureInitialized();
+//  runAppSpectorr();
+  runApp(MyApp());
+}
+
+void runAppSpector() {
+  var config = new Config();
+//  config.iosApiKey = "Your iOS API_KEY";
+  config.androidApiKey = "android_MTY0NmFiY2UtYTVmZC00MWMzLWIwYjctM2JhNzBjYTc3ODg0";
+  AppSpectorPlugin.run(config);
+}
 
 class MyApp extends StatelessWidget {
   @override

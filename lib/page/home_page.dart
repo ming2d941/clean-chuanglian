@@ -1,3 +1,4 @@
+import 'package:clean_service/common/database_provider.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:clean_service/viewmodel/main_srceen_model.dart';
@@ -120,7 +121,11 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   _cartPressed(context, model, model.productController.allProduct[1]);
                 }),
-            CustomProductItem(),
+            GestureDetector(
+                child: CustomProductItem(),
+                onTap: () {
+                  DBProvider.db.getCustomers(parent: null);
+                }),
             CustomProductItem(),
             CustomProductItem(),
             CustomProductItem(),

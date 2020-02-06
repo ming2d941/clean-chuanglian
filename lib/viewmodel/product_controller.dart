@@ -4,8 +4,5 @@ class ProductController {
 
   List<Product> allProduct;
 
-  ProductController() {
-    allProduct = List<Product>()..add(Product()..id = 0..type=ProductType.GeLian)
-    ..add(Product()..id = 1..type=ProductType.ChuangLian);
-  }
+  ProductController();
 }

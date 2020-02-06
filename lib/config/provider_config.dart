@@ -1,5 +1,6 @@
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/main_srceen_model.dart';
+import 'package:clean_service/viewmodel/preload_all_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,7 @@ import '../main.dart';
 
 class ProviderConfig {
   static ProviderConfig _instance;
+  PreloadDataController preloadDataController;
 
   static ProviderConfig getInstance() {
     if (_instance == null) {
@@ -15,17 +17,19 @@ class ProviderConfig {
     return _instance;
   }
 
-  ProviderConfig._internal();
+  ProviderConfig._internal() {
+    preloadDataController = PreloadDataController();
+  }
 
 
   Widget getMainPage() {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: MainScreenModel(),
+          value: preloadDataController.mainScreenModel,
         ),
         ChangeNotifierProvider.value(
-          value: CartModel(),
+          value: preloadDataController.cartModel,
         ),
       ],
       child: MainScreen(),
