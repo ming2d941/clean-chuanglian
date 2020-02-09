@@ -16,9 +16,10 @@ class AppTextStyle {
   );
 
   static const order_no = const TextStyle(
+    fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
-    fontSize: 17.0,
-    color: Colors.black,
+    fontSize: 15.0,
+    color: Colors.grey,
   );
 
   static const order_diver = const TextStyle(

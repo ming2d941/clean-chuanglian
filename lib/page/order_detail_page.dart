@@ -3,7 +3,12 @@ import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final OrderInfo order;
@@ -17,6 +22,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   double _height;
   double _width;
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  var contentKey = GlobalKey<ScaffoldState>();
   bool isExpanded = false;
 
   GlobalKey<State<StatefulWidget>> _globalKey;
@@ -60,21 +66,32 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         child: Column(
           children: <Widget>[
             Expanded(
+              key: contentKey,
                 child: Scrollbar(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(20),
                 child: Column(children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 5),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "NO.${widget.order.id}",
+                      style: AppTextStyle.order_no,
+                    ),
+                  ),
                   Text(
                     "聊城市脑科医院\n窗、围帘送洗登记表",
                     textAlign: TextAlign.center,
                     style: AppTextStyle.title,
                   ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 15, 20, 20),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "编号：${widget.order.id}",
-                      style: AppTextStyle.order_no,
+                    padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
+                    child: Expanded(
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "科室(病房)：${widget.order.customer.name}",
+                          )),
                     ),
                   ),
                   Container(
@@ -98,94 +115,109 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('清洗物品',
-                              style: AppTextStyle.order_diver,),
+                      padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 7,
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '清洗物品',
+                                style: AppTextStyle.order_diver,
+                              ),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('数量',
-                              style: AppTextStyle.order_diver,),
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '数量',
+                                style: AppTextStyle.order_diver,
+                              ),
+                            ),
                           ),
-                        ),
-                    ],)),
+                        ],
+                      )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: Divider(height: 2, color: Colors.grey,),),
-
+                    child: Divider(
+                      height: 2,
+                      color: Colors.grey,
+                    ),
+                  ),
                   Container(
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                       child: Row(
                         children: <Widget>[
                           Expanded(
-                            flex: 5,
+                            flex: 7,
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text('窗帘',),
+                              child: Text(
+                                '窗帘',
+                              ),
                             ),
                           ),
                           Expanded(
-                            flex: 5,
+                            flex: 3,
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text('3',),
-                            ),
-                          ),
-                        ],)),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text('签字',
-                        style: AppTextStyle.order_diver,),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: Divider(height: 2, color: Colors.grey,),),
-
-                  SizedBox(
-                    width: _width,
-                    height: _height / 3,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      decoration: new BoxDecoration(
-                        border: new Border.all(color: Colors.black38, width: 1),
-                      ),
-                      child: Stack(
-                        children: [
-                          _signatureView,
-                          Visibility(
-                            //!_signatureView.isEmpty nullpoint exception
-                            //https://github.com/flutter/flutter/issues/22029
-                            visible: _isShowClear,
-                            child: GestureDetector(
-                              child: Container(
-                                alignment: Alignment.topRight,
-                                margin: EdgeInsets.fromLTRB(0, 15, 0, 8),
-                                child: Text('clear'),
+                              child: Text(
+                                '3',
                               ),
-                              onTap: _clear,
                             ),
                           ),
                         ],
+                      )),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '科室负责人签字',
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                        width: _width,
+                        height: _height / 3,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          decoration: new BoxDecoration(
+                            border:
+                                new Border.all(color: Colors.black38, width: 1),
+                          ),
+                          child: Stack(
+                            children: [
+                              _signatureView,
+                              Visibility(
+                                //!_signatureView.isEmpty nullpoint exception
+                                //https://github.com/flutter/flutter/issues/22029
+                                visible: _isShowClear,
+                                child: GestureDetector(
+                                  child: Container(
+                                    alignment: Alignment.topRight,
+                                    padding: EdgeInsets.fromLTRB(15, 15, 15, 8),
+                                    child: Text('clear'),
+                                  ),
+                                  onTap: _clear,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ]),
               ),
             )),
-            SizedBox(
+            GestureDetector(onTap: () {
+              _capturePng();
+            },
+            child: SizedBox(
               width: _width * 0.9,
               height: 60,
               child: Container(
@@ -200,15 +232,22 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 alignment: Alignment.center,
                 child: Text('确定', style: AppTextStyle.text_regular_15),
               ),
-            ),
+            ),),
           ],
         ),
       ),
     );
   }
 
+  Future<void> _capturePng() async {
+    RenderRepaintBoundary boundary = contentKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+    print('@@@ _capturePng $result');
+  }
+
   void _clear() {
     _signatureView.clear();
   }
-
 }
