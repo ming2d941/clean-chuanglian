@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Row(
                       children: <Widget>[
-                        Text(mainScreenModel.customerController.current.name ??
+                        Text(mainScreenModel.customerController.current?.name ??
                                 '未知'
 //                                locations[selectedLocationIndex],
 //                                style: dropdownMenuLabel,
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
                 child: CustomProductItem(),
                 onTap: () {
-                  DBProvider.db.getCustomers(parent: null);
+                  DBProvider.db.getAllCustomers(parent: null);
                 }),
             CustomProductItem(),
             CustomProductItem(),
@@ -136,8 +136,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _cartPressed(
-      BuildContext context, MainScreenModel model, Product curProduct) {
+  _cartPressed (
+      BuildContext context, MainScreenModel model, Product curProduct){
     showModalBottomSheet(
       context: context,
       builder: (sheetContext) => BottomSheet(

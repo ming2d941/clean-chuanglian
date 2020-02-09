@@ -10,8 +10,20 @@ class AppTextStyle {
   );
 
   static const title = const TextStyle(
-  fontStyle: FontStyle.normal,
-  fontSize: 24.0,
-  color: Colors.black,
+    fontStyle: FontStyle.normal,
+    fontSize: 24.0,
+    color: Colors.black,
+  );
+
+  static const order_no = const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 17.0,
+    color: Colors.black,
+  );
+
+  static const order_diver = const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 13.0,
+    color: Colors.grey,
   );
 }

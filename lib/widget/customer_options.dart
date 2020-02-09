@@ -34,13 +34,15 @@ class _CustomerOptionsDialogState extends State<CustomerOptionsDialog> {
       return Column(
         children: <Widget>[
           Text(customerInfo.name),
-          SizedBox(
+          Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            alignment: Alignment.center,
             width: double.infinity,
             child: Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
+              alignment: WrapAlignment.start,
+              runAlignment: WrapAlignment.start,
               runSpacing: 0.0,
-              spacing: 16.0,
+              spacing: 15.0,
               children: customerInfo.children.map((customerInfo) {
                 return ActionChip(
                   label: Text(customerInfo.name),

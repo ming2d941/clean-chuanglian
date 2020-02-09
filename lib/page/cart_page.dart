@@ -1,7 +1,12 @@
+import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
+import 'package:clean_service/page/order_list_page.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
+import 'package:clean_service/viewmodel/order_model.dart';
+import 'package:clean_service/widget/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
@@ -79,7 +84,7 @@ class _CartPageState extends State<CartPage> {
                               bottomRight: const Radius.circular(21.0))),
                       alignment: Alignment.center,
                       child: Text('下单', style: AppTextStyle.text_regular_15)),
-                  onTap: () => _goOrderPage(context),
+                  onTap: () => _goOrderPage(cartModel.selectedCartInfoMap, OrderPageType.unRegister),
                 ),
               ],
             ),
@@ -281,7 +286,38 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  _goOrderPage(BuildContext context) {}
+  _goOrderPage(Map<Customer, List<Product>> selectedList, OrderPageType type) async {
+    print('$selectedList');
+
+    if (selectedList == null || selectedList.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "请先选择清洗物品",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          textColor: Colors.black);
+      return;
+    }
+
+
+    showDialog<Null>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new LoadingDialog(
+            text: '正在生成订单...',
+          );
+        });
+
+    await Provider.of<OrderModel>(context).createOrder(selectedList);
+    await Provider.of<CartModel>(context).removeSelectedItems();
+
+    Navigator.pop(context);
+
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (BuildContext context) =>
+        ProviderConfig.getInstance().getOrderListPage(type)));
+  }
 
   _selectAllPress(CartModel cartModel) {
     cartModel.handleSelectAll();

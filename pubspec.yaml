@@ -34,6 +34,7 @@ dependencies:
   path_provider: ^1.6.0
   pdf: ^1.4.1
   appspector: ^0.1.0
+  fluttertoast: ^3.1.3
 #  address_picker: ^0.0.1
 #  flutter_jd_address_selector:
 #    git:
@@ -63,6 +64,7 @@ flutter:
     - assets/images/
     - assets/images/chuanglian.jpeg
     - assets/images/gelian.jpeg
+    - assets/images/login_bg.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

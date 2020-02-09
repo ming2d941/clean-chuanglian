@@ -43,6 +43,7 @@ class MainScreen extends StatelessWidget {
       return SafeArea(
         child: Scaffold(
           bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.white,
             iconSize: 25,
             selectedFontSize: 12,
             unselectedFontSize: 10,

@@ -9,9 +9,13 @@ const String PARENT_ID = "parent_id";
 const String TYPE = "type";
 const String CUSTOMER_ID = "customer_id";
 const String PRODUCT_ID = "product_id";
+const String PRODUCTS = "products";
 const String COUNT = "count";
 const String ORDER_ID = "order_id";
 const String START_TIME = "start_time";
 const String END_TIME = "end_time";
 const String USE_TIME = "use_time";
+const String ORDER_STATUS = "order_status";
+const String SIGNATURE_PATH = "signature_path";
+const String ORDER_IMAGE_PATH = "order_image_path";
 

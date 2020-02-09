@@ -3,6 +3,7 @@ import 'customer_info.dart';
 class CustomerController {
 
   List<Customer> allCustomer;
+  List<Customer> flatAllCustomer = List<Customer>();
 
   int _index = 0;
 

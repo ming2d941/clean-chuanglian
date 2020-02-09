@@ -40,6 +40,24 @@ class Customer {
     } while (customer != null);
     return list;
   }
+
+  defaultTitleRow() {
+    var nameList = fullNames();
+    return Row(children: nameList.map((name) {
+      var index = nameList.indexOf(name);
+      return Row(
+        children: <Widget>[
+          Text(name),
+          index != nameList.length - 1
+              ? Icon(
+            Icons.arrow_right,
+            color: Colors.grey,
+          )
+              : Container(),
+        ],
+      );
+    }).toList(),);
+  }
 }
 
 enum CustomerType {
