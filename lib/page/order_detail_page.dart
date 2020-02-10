@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'package:clean_service/common/db_to_model.dart';
-import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -228,6 +230,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
     print('@@@ _capturePng $result');
+
+//    return new Future.delayed(const Duration(milliseconds: 2000), () async {
+//      final ByteData bytes = await rootBundle.load(result);
+
+       Uint8List data = await File.fromUri(Uri.parse(result)).readAsBytes();
+
+      await Share.file('esys image', 'esys.png', data,
+          'image/png', text: 'My optional text.');
+
+//    });
+//    await Share.share('$result', subject: 'Look what I made!');
+
   }
 
   void _clear() {
