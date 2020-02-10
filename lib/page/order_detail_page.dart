@@ -3,12 +3,16 @@ import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
+import 'package:clean_service/widget/loading.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
 import 'dart:typed_data';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class OrderDetailPage extends StatefulWidget {
@@ -29,12 +33,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   GlobalKey<State<StatefulWidget>> _globalKey;
   SignatureView _signatureView;
   bool _isShowClear = true;
+  bool _canSend = false;
   ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
     super.initState();
     _globalKey = GlobalKey();
+    _canSend = widget.order.status == OrderStatus.doing;
   }
 
   @override
@@ -43,24 +49,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     _width = MediaQuery.of(context).size.width;
 
     _signatureView = SignatureView(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[50],
       penStyle: Paint()
-        ..color = Colors.blue
+        ..color = Colors.black
         ..strokeCap = StrokeCap.round
         ..strokeWidth = 5.0,
       onSigned: (data) {
         print("On change $data");
-//        bool isVisible = data.isNotEmpty;
-//        if (isVisible != _isShowClear) {
-//          setState(() {
-//            _isShowClear = isVisible;
-//          });
-//        }
+
       },
     );
 
-//    List<Widget> list = list;
-
+    print('${widget.order.signatureImage}');
     return Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
@@ -177,7 +177,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               ),
                               child: Stack(
                                 children: [
-                                  _signatureView,
+                                  widget.order.signatureImage.isEmpty ? _signatureView :
+                                  Image.file(File(widget.order.signatureImage)),
                                   Visibility(
                                     //!_signatureView.isEmpty nullpoint exception
                                     //https://github.com/flutter/flutter/issues/22029
@@ -187,7 +188,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                         alignment: Alignment.topRight,
                                         padding:
                                             EdgeInsets.fromLTRB(15, 15, 15, 8),
-                                        child: Text('clear'),
+                                        child: Icon(Icons.delete_sweep, color: Colors.black38,),
                                       ),
                                       onTap: _clear,
                                     ),
@@ -205,7 +206,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             )),
             GestureDetector(
               onTap: () {
-                _capturePng();
+                _capturePng(context);
               },
               child: SizedBox(
                 width: _width * 0.9,
@@ -220,7 +221,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           topRight: const Radius.circular(30.0),
                           bottomRight: const Radius.circular(30.0))),
                   alignment: Alignment.center,
-                  child: Text('确定', style: AppTextStyle.text_regular_15),
+                  child: Text(_canSend?'发送' : '确定', style: AppTextStyle.text_regular_15),
                 ),
               ),
             ),
@@ -230,17 +231,46 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  Future<void> _capturePng() async {
-    screenshotController.capture().then((File image) async {
-      Uint8List data = await image.readAsBytes();
-      final result = await ImageGallerySaver.saveImage(data);
+  Future<void> _capturePng(BuildContext ctx) async {
+    if (!_canSend) {
+      showDialog<Null>(
+          context: ctx,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return new LoadingDialog(
+              text: '正在保存订单..',
+            );
+          });
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+//      final dir = join(documentsDirectory.path,'image');
+//      if (!await File(dir).exists()) {
+//        File(dir).create(recursive: true);
+//      }
+      final path = join(documentsDirectory.path,'servicer_${widget.order.id}.png');
+      File file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+      await file.create();
+      file.writeAsBytes(await _signatureView?.exportBytes());
+      widget.order.signatureImage = file.path;
 
-      await Share.file('esys image', 'esys.png', data, 'image/png',
-          text: 'My optional text.');
-      print('@@@ _capturePng $result');
-    }).catchError((onError) {
-      print('@@@@ ' + onError);
-    });
+      await Provider.of<OrderModel>(ctx).updateOrder(widget.order);
+      setState(() {
+        _canSend = widget.order.status == OrderStatus.doing;
+      });
+      Navigator.pop(ctx);
+    } else {
+      screenshotController.capture().then((File image) async {
+        Uint8List data = await image.readAsBytes();
+        await Share.file('esys image', 'esys.png', data, 'image/png',
+            text: 'My optional text.');
+//      final result = await ImageGallerySaver.saveImage(data);
+//      print('@@@ _capturePng $result');
+      }).catchError((onError) {
+        print('@@@@ ' + onError);
+      });
+    }
 
 //    return new Future.delayed(const Duration(milliseconds: 2000), () async {
 //      final ByteData bytes = await rootBundle.load(result);

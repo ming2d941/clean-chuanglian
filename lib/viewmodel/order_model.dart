@@ -46,7 +46,17 @@ class OrderModel extends ChangeNotifier {
   }
 
   updateOrder(OrderInfo order) async {
-    //TODO list
+    final OrderStatus status = order.status;
+    order.status = order.nextStatus();
+    if (status == OrderStatus.prepare) {
+      prepareOrders.removeWhere((element) => element.id == order.id);
+      doingOrders.add(order);
+    } else if (status == OrderStatus.doing) {
+      doingOrders.removeWhere((element) => element.id == order.id);
+      doneOrders.add(order);
+    } else if (status == OrderStatus.done) {
+      doneOrders.removeWhere((element) => element.id == order.id);
+    }
     await DBProvider.db.updateOrderItem(order);
     notifyListeners();
   }
@@ -113,7 +123,10 @@ class OrderModel extends ChangeNotifier {
 }
 
 class OrderInfo {
+
   int id;
+
+  int bizId;
 
   Customer customer;
 
@@ -128,6 +141,12 @@ class OrderInfo {
   String signatureImage = '';
 
   String orderImage = '';
+
+  OrderStatus nextStatus() {
+    var statusList = OrderStatus.values;
+    int next = status.index + 1;
+    return next >= statusList.length ? OrderStatus.done : statusList[next];
+  }
 
   String get productJson {
     if (products == null || products.isEmpty){
