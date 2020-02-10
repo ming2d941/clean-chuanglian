@@ -1,6 +1,7 @@
 import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
+import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -57,6 +58,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       },
     );
 
+//    List<Widget> list = list;
+
     return Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
@@ -69,8 +72,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               key: contentKey,
                 child: Scrollbar(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: Column(children: <Widget>[
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(20),
+                  child: Column(children: <Widget>[
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 15, 0, 5),
                     alignment: Alignment.centerRight,
@@ -147,30 +152,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       color: Colors.grey,
                     ),
                   ),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 7,
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '窗帘',
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '3',
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
+                  ...widget.order.products.map((e) => _productList(e)).toList(),
+
                   Column(
                     children: <Widget>[
                       Container(
@@ -187,7 +170,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                           decoration: new BoxDecoration(
                             border:
-                                new Border.all(color: Colors.black38, width: 1),
+                            new Border.all(color: Colors.black38, width: 1),
                           ),
                           child: Stack(
                             children: [
@@ -211,7 +194,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       ),
                     ],
                   ),
-                ]),
+                ]),),
               ),
             )),
             GestureDetector(onTap: () {
@@ -249,5 +232,32 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   void _clear() {
     _signatureView.clear();
+  }
+
+  _productList(Product product) {
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 7,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  product.name,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '${product.count}',
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
