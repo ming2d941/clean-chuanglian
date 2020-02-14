@@ -4,6 +4,7 @@ import 'package:clean_service/config/constant.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
+import 'package:flutter/cupertino.dart';
 
 Map<String, dynamic> toCustomerMap(String name,
     {CustomerType type = CustomerType.bigCustomer, int parentId = -1}) {
@@ -61,3 +62,4 @@ formatDate(num time) {
   String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
   return timestamp;
 }
+

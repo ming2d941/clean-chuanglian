@@ -52,14 +52,14 @@ class ProviderConfig {
     );
   }
 
-  Widget getOrderDetailPage(OrderInfo order) {
+  Widget getOrderDetailPage(OrderInfo order, OrderPageType curPageType) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
           value: preloadDataController.orderModel,
         ),
       ],
-      child: OrderDetailPage(order),
+      child: OrderDetailPage(order, curPageType),
     );
   }
 
@@ -68,9 +68,9 @@ class ProviderConfig {
         builder: (BuildContext context) => getOrderListPage(type)));
   }
 
-  goOrderDetail(BuildContext context, OrderInfo order) {
+  goOrderDetail(BuildContext context, OrderInfo order, OrderPageType curPageType) {
     Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => getOrderDetailPage(order)));
+        builder: (BuildContext context) => getOrderDetailPage(order, curPageType)));
   }
 
   String content(CartModel cartModel) {

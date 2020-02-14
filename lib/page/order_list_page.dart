@@ -82,7 +82,9 @@ class _OrderListPageState extends State<OrderListPage> {
         }));
   }
 
-  void _onTabSelect(int index) {}
+  void _onTabSelect(int index) {
+    widget.orderType = OrderPageType.values[index];
+  }
 
   _buildList(OrderModel orderModel, List<OrderInfo> list) {
     return ListView.separated(
@@ -95,7 +97,7 @@ class _OrderListPageState extends State<OrderListPage> {
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ListTile(
             onTap: () {
-              ProviderConfig.getInstance().goOrderDetail(context, _current);
+              ProviderConfig.getInstance().goOrderDetail(context, _current, widget.orderType);
             },
             title: _current.customer.defaultTitleRow(),//new flag
             subtitle: Text(formatDate(_current.startTime)),

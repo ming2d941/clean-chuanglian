@@ -2,6 +2,7 @@ import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/page/order_list_page.dart';
 import 'package:consumer_picker/flutter_jd_address_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class MinePage extends StatefulWidget {
@@ -23,18 +24,18 @@ class _MinePageState extends State<MinePage> {
   List<ToolsList> tools = [
     new ToolsList(
         icon: Icons.people,
-        title: '好友列表',
-        route: 'friend',
+        title: '维保人员签名',
+        route: 'sign',
         color: Colors.lightBlue),
     new ToolsList(
         icon: Icons.receipt,
-        title: '优惠券',
-        route: 'coupon',
+        title: '添加商品',
+        route: 'product',
         color: Colors.orange),
     new ToolsList(
         icon: Icons.room,
-        title: '收货地址',
-        route: 'userMapList',
+        title: '添加客户',
+        route: 'customer',
         color: Colors.red),
     new ToolsList(
         icon: Icons.monetization_on,
@@ -183,6 +184,7 @@ class _MinePageState extends State<MinePage> {
           return Ink(
             child: InkWell(
               onTap: () {
+                _onPress(index);
 //                Application.router
 //                    .navigateTo(context, "/${tools[index].route}");
               },
@@ -207,6 +209,22 @@ class _MinePageState extends State<MinePage> {
         }, childCount: tools.length),
       )
     ]);
+  }
+
+  void _onPress(int index) {
+    switch(index) {
+      case 0:
+
+        break;
+      default:
+        Fluttertoast.showToast(
+            msg: "建设中，敬请期待...",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            textColor: Colors.black);
+        break;
+    }
   }
 }
 

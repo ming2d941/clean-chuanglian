@@ -6,7 +6,14 @@ class AppTextStyle {
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     fontSize: 15.0,
-    color: Colors.blueAccent,
+    color: Colors.white,
+  );
+
+  static const text_regular_17 = const TextStyle(
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    fontSize: 17.0,
+    color: Colors.white,
   );
 
   static const title = const TextStyle(
