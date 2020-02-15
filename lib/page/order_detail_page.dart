@@ -7,6 +7,7 @@ import 'package:clean_service/widget/loading.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:typed_data';
@@ -151,6 +152,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             ...widget.orderDetail.order.products
                                 .map((e) => _productList(e))
                                 .toList(),
+                            _buildStartView(),
                             _buildSignView(),
                             _writeSignatureArea(),
                           ]),
@@ -209,6 +211,69 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ));
   }
 
+  _buildStartView() {
+    return widget.orderDetail.isDoneStatus() || widget.orderDetail.isFinishedStatus()
+        ? Container(
+            margin: EdgeInsets.fromLTRB(0, 25, 0, 2),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '评价',
+                    style: AppTextStyle.order_diver,
+                  ),
+                ),
+                Divider(
+                  height: 2,
+                  color: Colors.grey,
+                ),
+                Container(margin: EdgeInsets.fromLTRB(0, 10, 0, 5)),
+                ...widget.orderDetail.ratingItems
+                    .map((e) => _buildRatingItem(e)),
+              ],
+            ),
+          ) : Container();
+  }
+
+//洗涤质量情况
+  //零配件配置情况
+  //安装维护情况
+  //服务人员服务质量
+  Widget _buildRatingItem(RatingItem item) {
+    print('@@@ _buildRatingItem ${item.current}');
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Row(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(item.title),
+          ),
+          !widget.orderDetail.isFinishedStatus() ? Container(
+            alignment: Alignment.centerLeft,
+            child: RatingBar(
+              initialRating: 0,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: false,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: item.onRatingUpdate,
+            ),
+          ) : Container(
+            margin: EdgeInsets.only(left: 35, bottom: 5),
+            alignment: Alignment.centerLeft,
+            child: Text(item.ratingText()),),
+        ],
+      ),
+    );
+  }
+
   _buildSignView() {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 25, 0, 5),
@@ -234,7 +299,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: FutureBuilder(
                       future: _getServerSign(),
                       builder: (context, snapshot) {
-                        print('@@@@===> ${snapshot.data} == ${snapshot.hasData}');
+                        print(
+                            '@@@@===> ${snapshot.data} == ${snapshot.hasData}');
                         return snapshot.hasData
                             ? Column(
                                 children: <Widget>[
@@ -466,14 +532,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ],
             ),
           ),
-//          content: Text('11111'),
           actions: <Widget>[
             new FlatButton(
               child: new Text('确定'),
               onPressed: () {
                 if (!signatureView.hasSign()) {
                   Fluttertoast.showToast(
-                      msg: "请在灰色框内书写签名！",
+                      msg: "请您灰色框内书写签名！",
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIos: 1,

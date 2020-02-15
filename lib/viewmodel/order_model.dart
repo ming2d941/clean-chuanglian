@@ -140,7 +140,43 @@ class OrderDetail {
 
   OrderPageType curPageType;
 
-  OrderDetail(this.order, this.curPageType);
+  List<RatingItem> ratingItems;
+
+  OrderDetail(this.order, this.curPageType) {
+    ratingItems = <RatingItem>[
+      RatingItem()
+        ..title = '洗涤返回时间        '
+        ..current = order.evaluateSpeed.toDouble()
+        ..onRatingUpdate = (double result) {
+          print('@@@ result');
+          order.evaluateSpeed = result.toInt();
+        },
+      RatingItem()
+        ..title = '洗涤质量情况        '
+        ..current = order.evaluateQuality.toDouble()
+        ..onRatingUpdate = (double result) {
+          order.evaluateQuality = result.toInt();
+        },
+      RatingItem()
+        ..title = '零配件配置情况    '
+        ..current = order.evaluateConfig.toDouble()
+        ..onRatingUpdate = (double result) {
+          order.evaluateConfig = result.toInt();
+        },
+      RatingItem()
+        ..title = '安装维护情况        '
+        ..current = order.evaluateMaintain.toDouble()
+        ..onRatingUpdate = (double result) {
+          order.evaluateMaintain = result.toInt();
+        },
+      RatingItem()
+        ..title = '服务人员服务质量'
+        ..current = order.evaluateServer.toDouble()
+        ..onRatingUpdate = (double result) {
+          order.evaluateServer = result.toInt();
+        },
+    ];
+  }
 
   mainButtonText() {
     String text;
@@ -221,7 +257,6 @@ class OrderDetail {
       return "送回时间：${formatDate(order.endTime)}";
     }
     return "预计送回时间：${formatDate(order.startTime + Duration(days: 1).inMilliseconds)}";
-
   }
 
   hasServerSignature() {
@@ -232,7 +267,7 @@ class OrderDetail {
     return order.signatureServer;
   }
 
-  saveServerSignature() async{
+  saveServerSignature() async {
     String path = await Preference.getAdminSignPath();
     if (path != null && path.isNotEmpty) {
       order.signatureServer = path;
@@ -240,7 +275,9 @@ class OrderDetail {
   }
 
   bizId() {
-    return order.bizId == null || order.bizId.isEmpty ? '' : 'No.${order.bizId}';
+    return order.bizId == null || order.bizId.isEmpty
+        ? ''
+        : 'No.${order.bizId}';
   }
 }
 
@@ -259,11 +296,11 @@ class OrderInfo {
 
   num endTime = 0.0;
 
-  int evaluateSpeed = 5;
-  int evaluateQuality = 5;
-  int evaluateConfig = 5;
-  int evaluateMaintain = 5;
-  int evaluateServer = 5;
+  int evaluateSpeed = 0;
+  int evaluateQuality = 0;
+  int evaluateConfig = 0;
+  int evaluateMaintain = 0;
+  int evaluateServer = 0;
 
   String signatureCustomer = '';
   String signatureServer = '';
@@ -315,3 +352,26 @@ class OrderInfo {
 }
 
 enum OrderStatus { prepare, doing, done, finished }
+
+class RatingItem {
+  String title;
+  double current;
+  ValueChanged<double> onRatingUpdate;
+
+  String ratingText() {
+    String text = '非常满意';
+    switch (current.toInt()) {
+      case 1:
+        text = '不满意';
+        break;
+      case 2:
+        text = '一般';
+        break;
+      case 3:
+      case 4:
+        text = '满意';
+        break;
+    }
+    return text;
+  }
+}

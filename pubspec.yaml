@@ -39,7 +39,7 @@ dependencies:
   esys_flutter_share: ^1.0.2
   screenshot: ^0.1.1
   shared_preferences: ^0.5.6+1
-  smooth_star_rating: 1.0.4+2
+  flutter_rating_bar: ^3.0.1+1
 #  address_picker: ^0.0.1
 #  flutter_jd_address_selector:
 #    git:
