@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:clean_service/common/application.dart';
-import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
@@ -11,12 +10,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_signature_view/flutter_signature_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:typed_data';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
-import 'order_list_page.dart';
+import 'mine_page.dart' as MinePage;
 
 class OrderDetailPage extends StatefulWidget {
   final OrderDetail orderDetail;
@@ -74,89 +71,92 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 Expanded(
                     child: Scrollbar(
                   child: SingleChildScrollView(
-                    child: Container(margin: EdgeInsets.only(top: 20),
-                    child: Screenshot(
-                      controller: screenshotController,
-                      child: Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-                        child: Column(children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "NO.${widget.orderDetail.order.bizId}",
-                              style: AppTextStyle.order_no,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Screenshot(
+                        controller: screenshotController,
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                          child: Column(children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                "${widget.orderDetail.bizId()}",
+                                style: AppTextStyle.order_no,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "聊城市脑科医院\n窗、围帘送洗${widget.orderDetail.subTile()}",
-                            textAlign: TextAlign.center,
-                            style: AppTextStyle.title,
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "科室(病房)：${widget.orderDetail.customerName()}",
-                                )),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "送洗时间：${widget.orderDetail.startDate()}",
-                                )),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(widget.orderDetail.getBackDate())),
-                          ),
-                          Container(
+                            Text(
+                              "聊城市脑科医院\n窗、围帘送洗${widget.orderDetail.subTile()}",
+                              textAlign: TextAlign.center,
+                              style: AppTextStyle.title,
+                            ),
+                            Container(
                               padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
-                              child: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    flex: 7,
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        '清洗物品',
-                                        style: AppTextStyle.order_diver,
-                                      ),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    flex: 3,
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        '数量',
-                                        style: AppTextStyle.order_diver,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            child: Divider(
-                              height: 2,
-                              color: Colors.grey,
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "科室(病房)：${widget.orderDetail.customerName()}",
+                                  )),
                             ),
-                          ),
-                          ...widget.orderDetail.order.products
-                              .map((e) => _productList(e))
-                              .toList(),
-                          _buildSignView(),
-                          _writeSignatureArea(),
-                        ]),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "送洗时间：${widget.orderDetail.startDate()}",
+                                  )),
+                            ),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child:
+                                      Text(widget.orderDetail.getBackDate())),
+                            ),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
+                                child: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      flex: 7,
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '清洗物品',
+                                          style: AppTextStyle.order_diver,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 3,
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '数量',
+                                          style: AppTextStyle.order_diver,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Divider(
+                                height: 2,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            ...widget.orderDetail.order.products
+                                .map((e) => _productList(e))
+                                .toList(),
+                            _buildSignView(),
+                            _writeSignatureArea(),
+                          ]),
+                        ),
                       ),
-                    ),),
+                    ),
                   ),
                 )),
                 _buildButtonRow(context),
@@ -169,7 +169,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ),
               onTap: () {
                 Navigator.pop(context);
-            },),
+              },
+            ),
           ],
         ),
       ),
@@ -230,19 +231,26 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 children: <Widget>[
                   Flexible(
                     flex: 1,
-                    child: FutureBuilder(future: Preference.getAdminSignPath(),
+                    child: FutureBuilder(
+                      future: _getServerSign(),
                       builder: (context, snapshot) {
-                        return snapshot.hasData ? Column(
-                          children: <Widget>[
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text('维保人员：')),
-                            Container(width: 200,
-                              height: 70,
-                            child: Image.file(File(snapshot.data)),),
-                          ],
-                        ) : Container();
-                      },),
+                        print('@@@@===> ${snapshot.data} == ${snapshot.hasData}');
+                        return snapshot.hasData
+                            ? Column(
+                                children: <Widget>[
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text('维保人员：')),
+                                  Container(
+                                    width: 200,
+                                    height: 70,
+                                    child: Image.file(File(snapshot.data)),
+                                  ),
+                                ],
+                              )
+                            : Container();
+                      },
+                    ),
                   ),
                   Flexible(
                     flex: 1,
@@ -254,9 +262,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Container(
                               alignment: Alignment.topLeft,
                               child: Text('科室负责人：')),
-                          Container(width: 200,
+                          Container(
+                              width: 200,
                               height: 70,
-                              child: Image.file(File(widget.orderDetail.order.signatureCustomer))),
+                              child: Image.file(File(
+                                  widget.orderDetail.order.signatureCustomer))),
                         ],
                       ),
                     ),
@@ -280,19 +290,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   _saveOrder(BuildContext ctx) async {
-    showDialog<Null>(
-        context: ctx,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return new LoadingDialog(
-            text: '正在保存订单..',
-          );
-        });
-    await widget.orderDetail.saveOrder(Provider.of<OrderModel>(ctx), _signatureView);
-    imageCache.clear();
-    setState(() {
-    });
-    Navigator.pop(ctx);
+    String sign = await _getServerSign();
+    if (sign == null || sign.isEmpty) {
+      showServerSignature(ctx, () {
+        widget.orderDetail.saveServerSignature();
+        _innerSaveOrder(ctx);
+      });
+    } else {
+      _innerSaveOrder(ctx);
+    }
   }
 
   _onPressSure(BuildContext ctx) async {
@@ -367,7 +373,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         topRight: const Radius.circular(30.0),
                         bottomRight: const Radius.circular(30.0))),
                 alignment: Alignment.center,
-                child: Text(widget.orderDetail.mainButtonText(), style: AppTextStyle.text_regular_17),
+                child: Text(widget.orderDetail.mainButtonText(),
+                    style: AppTextStyle.text_regular_17),
               ),
             ),
             flex: 4,
@@ -402,12 +409,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   _writeSignatureArea() {
     return Visibility(
       visible: widget.orderDetail.isRegisterStatus() ||
-      widget.orderDetail.isDoneStatus(),
+          widget.orderDetail.isDoneStatus(),
       child: Column(
         children: <Widget>[
           Container(
-            padding:
-            const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             alignment: Alignment.centerLeft,
             child: Text(
               '科室负责人签字',
@@ -419,24 +425,22 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             child: Container(
               margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
               decoration: new BoxDecoration(
-                border: new Border.all(
-                    color: Colors.black38, width: 1),
+                border: new Border.all(color: Colors.black38, width: 1),
               ),
               child: Stack(
                 children: [
                   _signatureView,
                   GestureDetector(
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        padding: EdgeInsets.fromLTRB(
-                            15, 15, 15, 8),
-                        child: Icon(
-                          Icons.delete_sweep,
-                          color: Colors.black38,
-                        ),
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      padding: EdgeInsets.fromLTRB(15, 15, 15, 8),
+                      child: Icon(
+                        Icons.delete_sweep,
+                        color: Colors.black38,
                       ),
-                      onTap: _clear,
                     ),
+                    onTap: _clear,
+                  ),
                 ],
               ),
             ),
@@ -444,5 +448,80 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ],
       ),
     );
+  }
+
+  showServerSignature(BuildContext context, Function surePress) {
+    print('@@@@ showAlert');
+    MinePage.SimpleSignatureView signatureView = MinePage.SimpleSignatureView();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: AlertDialog(
+          title: Text('维保人员签名'),
+          content: Container(
+            height: 200,
+            child: Column(
+              children: <Widget>[
+                signatureView,
+              ],
+            ),
+          ),
+//          content: Text('11111'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('确定'),
+              onPressed: () {
+                if (!signatureView.hasSign()) {
+                  Fluttertoast.showToast(
+                      msg: "请在灰色框内书写签名！",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 1,
+                      textColor: Colors.black);
+                  return;
+                }
+                goSure(context, signatureView, surePress);
+              },
+            ),
+          ],
+        ));
+  }
+
+  void _innerSaveOrder(BuildContext ctx) async {
+    showDialog<Null>(
+        context: ctx,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new LoadingDialog(
+            text: '正在保存订单..',
+          );
+        });
+    await widget.orderDetail
+        .saveOrder(Provider.of<OrderModel>(ctx), _signatureView);
+    imageCache.clear();
+    setState(() {});
+    Navigator.pop(ctx);
+  }
+
+  void goSure(BuildContext context, MinePage.SimpleSignatureView signatureView,
+      Function callback) async {
+    await signatureView.saveSign();
+    imageCache.clear();
+    Navigator.of(context).pop();
+    callback();
+  }
+
+  _getServerSign() async {
+    String path = await Preference.getAdminSignPath();
+    if (widget.orderDetail.hasServerSignature()) {
+      return widget.orderDetail.getServerSignature();
+    } else if (widget.orderDetail.isRegisterStatus() &&
+        path != null &&
+        path.isNotEmpty) {
+      await widget.orderDetail.saveServerSignature();
+      return widget.orderDetail.getServerSignature();
+    } else {
+      return null;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:clean_service/common/application.dart';
 import 'package:clean_service/common/database_provider.dart';
 import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/page/order_list_page.dart';
@@ -43,6 +44,7 @@ class OrderModel extends ChangeNotifier {
         allOrders?.add(orderInfo);
         prepareOrders?.add(orderInfo);
         orderInfo.id = await DBProvider.db.insetOrder(orderInfo);
+        orderInfo.buildBizId();
       }
     }
     allOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
@@ -143,11 +145,11 @@ class OrderDetail {
   mainButtonText() {
     String text;
     if (order.status == OrderStatus.prepare) {
-      text = '确定';
+      text = '登记';
     } else if (order.status == OrderStatus.doing) {
-      text = '完成';
+      text = '送回';
     } else if (order.status == OrderStatus.done) {
-      text = '确定';
+      text = '验收';
     } else {
       text = '好的';
     }
@@ -216,10 +218,29 @@ class OrderDetail {
 
   String getBackDate() {
     if (isFinishedStatus()) {
-      return "预计送回时间：${formatDate(order.endTime)}";
+      return "送回时间：${formatDate(order.endTime)}";
     }
     return "预计送回时间：${formatDate(order.startTime + Duration(days: 1).inMilliseconds)}";
 
+  }
+
+  hasServerSignature() {
+    return order.signatureServer != null && order.signatureServer.isNotEmpty;
+  }
+
+  String getServerSignature() {
+    return order.signatureServer;
+  }
+
+  saveServerSignature() async{
+    String path = await Preference.getAdminSignPath();
+    if (path != null && path.isNotEmpty) {
+      order.signatureServer = path;
+    }
+  }
+
+  bizId() {
+    return order.bizId == null || order.bizId.isEmpty ? '' : 'No.${order.bizId}';
   }
 }
 
@@ -286,6 +307,10 @@ class OrderInfo {
   @override
   String toString() {
     return 'id: $id;customer: $customer;products: $productJson;status: ${status.toString()};startTime: $startTime;';
+  }
+
+  void buildBizId() {
+    bizId = 'NK${formatBizNoByTime(startTime)}$id';
   }
 }
 

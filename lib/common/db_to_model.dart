@@ -69,6 +69,12 @@ formatDate(num time) {
   return timestamp;
 }
 
+formatBizNoByTime(num time) {
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt());
+  String timestamp = "${date.year.toString()}${date.month.toString().padLeft(2,'0')}${date.day.toString().padLeft(2,'0')}";
+  return timestamp;
+}
+
 sendBackDate(num time) {
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt());
   date.add(Duration(days: 1));

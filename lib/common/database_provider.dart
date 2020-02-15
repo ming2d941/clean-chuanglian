@@ -400,7 +400,7 @@ class DBProvider {
         orderInfo.signatureServer = item[SERVER_SIGNATURE];
         orderInfo.orderImage = item[ORDER_IMAGE_PATH];
         orderInfo.products = toProductList(item[PRODUCTS]);
-        orderInfo.bizId = 'nk_${orderInfo.startTime}_${orderInfo.id}';
+        orderInfo.buildBizId();
         orderInfo.evaluateSpeed = item[EVALUATE_SPEED];
         orderInfo.evaluateQuality = item[EVALUATE_QUALITY];
         orderInfo.evaluateConfig = item[EVALUATE_CONFIG];

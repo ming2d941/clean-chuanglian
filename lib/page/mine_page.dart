@@ -263,7 +263,7 @@ class _MinePageState extends State<MinePage> {
             new FlatButton(
               child: new Text('确定'),
               onPressed: () {
-                if (!hasSign(signatureView)) {
+                if (!signatureView.hasSign()) {
                   Fluttertoast.showToast(
                       msg: "请在灰色框内书写签名！",
                       toastLength: Toast.LENGTH_SHORT,
@@ -272,25 +272,13 @@ class _MinePageState extends State<MinePage> {
                       textColor: Colors.black);
                   return;
                 }
-                saveSign(signatureView);
+                signatureView.saveSign();
                 imageCache.clear();
                 Navigator.of(context).pop();
               },
             ),
           ],
         ));
-  }
-
-  bool hasSign(SimpleSignatureView signatureView) {
-    return signatureView.state.hasData();
-  }
-
-  void saveSign(SimpleSignatureView signatureView) async {
-    try {
-      String path = await signatureView.state.save();
-      print('@@@@@saveSign $path');
-      Preference.setAdminSignPath(path);
-    } catch (e) {}
   }
 }
 
@@ -303,6 +291,18 @@ class SimpleSignatureView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return state;
+  }
+
+  bool hasSign() {
+    return state.hasData();
+  }
+
+  Future<void> saveSign() async {
+    try {
+      String path = await state.save();
+      print('@@@@@saveSign $path');
+      await Preference.setAdminSignPath(path);
+    } catch (e) {}
   }
 }
 
@@ -322,7 +322,7 @@ class _SimpleSignatureState extends State<StatefulWidget> {
       penStyle: Paint()
         ..color = Colors.black
         ..strokeCap = StrokeCap.round
-        ..strokeWidth = 5.0,
+        ..strokeWidth = 4.0,
       onSigned: (data) {
         _signatureData = data;
       },
