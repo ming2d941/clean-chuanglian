@@ -22,11 +22,16 @@ class PreloadDataController {
     List<Customer> customers = await DBProvider.db.getAllCustomers(
         flatCustomers: mainScreenModel.customerController.flatAllCustomer);
     mainScreenModel.customerController.allCustomer = customers;
-    Customer customer = customers
-        .firstWhere((element) => element.type == CustomerType.bigCustomer);
-    mainScreenModel.productController.allProduct =
-        await DBProvider.db.getAllProducts(customer);
 
+    mainScreenModel.productController.allProduct.clear();
+    var iterator = customers.iterator;
+    while (iterator.moveNext()) {
+      var customer = iterator.current;
+      if (customer != null) {
+        mainScreenModel.productController.allProduct[customer] =
+        await DBProvider.db.getAllProducts(customer);
+      }
+    }
     cartModel.allCartInfoMap = await DBProvider.db.getAllCartInfo();
 
     //order

@@ -41,7 +41,7 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: Text(
             '订单管理',
@@ -49,9 +49,12 @@ class _OrderListPageState extends State<OrderListPage> {
           ),
           bottom: TabBar(
             tabs: _tabValues.map((item) {
-              return Text(
-                item['title'],
-                style: TextStyle(fontSize: 18.0),
+              return Padding(
+                padding: EdgeInsets.only(top: 5, bottom: 5),
+                child: Text(
+                  item['title'],
+                  style: TextStyle(fontSize: 18.0),
+                ),
               );
             }).toList(),
             controller: _controller,
@@ -63,7 +66,7 @@ class _OrderListPageState extends State<OrderListPage> {
             indicatorPadding: EdgeInsets.only(
               top: 5.0,
             ),
-            labelStyle: TextStyle(height: 4.0),
+//            labelStyle: TextStyle(height: 4.0),
           ),
         ),
         body: Consumer<OrderModel>(builder: (context, orderModel, child) {
@@ -74,8 +77,8 @@ class _OrderListPageState extends State<OrderListPage> {
                 alignment: Alignment.topCenter,
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: _buildList(orderModel,
-                    orderModel.getData(int.parse(item['route']))),
+                child: _buildList(
+                    orderModel, orderModel.getData(int.parse(item['route']))),
               );
             }).toList(),
           );
@@ -97,9 +100,10 @@ class _OrderListPageState extends State<OrderListPage> {
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ListTile(
             onTap: () {
-              ProviderConfig.getInstance().goOrderDetail(context, _current, widget.orderType);
+              ProviderConfig.getInstance()
+                  .goOrderDetail(context, _current, widget.orderType);
             },
-            title: _current.customer.defaultTitleRow(),//new flag
+            title: _current.customer.defaultTitleRow(), //new flag
             subtitle: Text(formatDate(_current.startTime)),
             trailing: GestureDetector(
               onTap: () {

@@ -70,6 +70,11 @@ flutter:
     - assets/images/chuanglian.jpeg
     - assets/images/gelian.jpeg
     - assets/images/login_bg.png
+    - assets/images/clean_water.png
+    - assets/images/calendar.png
+    - assets/images/task_planning.png
+    - assets/images/bubbles_1.jpg
+    - assets/images/bubbles_2.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

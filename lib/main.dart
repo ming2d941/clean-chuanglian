@@ -3,6 +3,7 @@ import 'package:clean_service/page/splash_page.dart';
 import 'package:clean_service/viewmodel/main_srceen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,7 +44,7 @@ class MainScreen extends StatelessWidget {
       return SafeArea(
         child: Scaffold(
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey[90],
             iconSize: 25,
             selectedFontSize: 12,
             unselectedFontSize: 10,
@@ -54,17 +55,15 @@ class MainScreen extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(FontAwesome.home),
                 title: Text('首页'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.shop),
-//            activeIcon: Icon(Icons.shopp),
                 title: Text('下单'),
               ),
               BottomNavigationBarItem(
-                icon: Icon(FontAwesome.user_o),
-                activeIcon: Icon(FontAwesome.user),
+                icon: Icon(FontAwesome.user),
                 title: Text('我的'),
               ),
             ],

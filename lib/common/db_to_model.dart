@@ -5,6 +5,8 @@ import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 Map<String, dynamic> toCustomerMap(String name,
     {CustomerType type = CustomerType.bigCustomer, int parentId = -1}) {
@@ -80,5 +82,15 @@ sendBackDate(num time) {
   date.add(Duration(days: 1));
   String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
   return timestamp;
+}
+
+toast(String msg) {
+  Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIos: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white);
 }
 

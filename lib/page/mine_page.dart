@@ -70,7 +70,7 @@ class _MinePageState extends State<MinePage> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[90],
       key: scaffoldKey,
       body: userIndexUI(),
     );
@@ -149,7 +149,6 @@ class _MinePageState extends State<MinePage> {
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(bottom: 8.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
                   border: Border(bottom: BorderSide(color: Colors.grey[300]))),
             ),
           ]))),

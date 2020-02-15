@@ -299,8 +299,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: FutureBuilder(
                       future: _getServerSign(),
                       builder: (context, snapshot) {
-                        print(
-                            '@@@@===> ${snapshot.data} == ${snapshot.hasData}');
                         return snapshot.hasData
                             ? Column(
                                 children: <Widget>[

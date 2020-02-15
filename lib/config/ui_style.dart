@@ -2,6 +2,33 @@
 import 'package:flutter/material.dart';
 
 class AppTextStyle {
+
+  static const main_menu = const TextStyle(
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 25.0,
+    color: Colors.white,
+  );
+
+  static const dropdown_menu = const TextStyle(
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 18.0,
+    color: Colors.white,
+  );
+
+  static const home_product_title = const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 20.0,
+    color: Colors.black,
+  );
+
+  static const home_product_sub_title = const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 15.0,
+    color: Colors.grey,
+  );
+
   static const text_common_black= const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 13.0,

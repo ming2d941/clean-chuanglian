@@ -34,7 +34,7 @@ class _CartPageState extends State<CartPage> {
 
   _showCartEmpty(CartModel cartModel) {
     return Center(
-      child: Text('No Data!!!'),
+      child: Text('空空如也~'),
     );
   }
 
@@ -52,19 +52,23 @@ class _CartPageState extends State<CartPage> {
           child: Container(
             padding: const EdgeInsets.only(left: 15, right: 15),
             height: 70,
-            child: Row(
+            child: Container(
+              height: 70,
+                child: Row(
               children: <Widget>[
                 GestureDetector(
+                behavior: HitTestBehavior.opaque,
                   child: Row(
                     children: <Widget>[
-                      cartModel.isAllSelected
-                          ? Icon(Icons.check_circle, color: Colors.red)
-                          : Icon(Icons.radio_button_unchecked,
-                              color: Colors.grey),
-                      SizedBox(width: 10.0),
-                      Text(
-                        '全选',
-                      ),
+                      Container(padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: cartModel.isAllSelected
+                            ? Icon(Icons.check_circle, color: Colors.red, size: 22,)
+                            : Icon(Icons.radio_button_unchecked,
+                            color: Colors.grey, size: 22),),
+                      Container(
+                          child: Text(
+                            '全选',
+                          )),
                     ],
                   ),
                   onTap: () => _selectAllPress(cartModel),
@@ -87,7 +91,7 @@ class _CartPageState extends State<CartPage> {
                   onTap: () => _goOrderPage(cartModel.selectedCartInfoMap, OrderPageType.unRegister),
                 ),
               ],
-            ),
+            )),
           ),
         ),
       ],
@@ -117,11 +121,13 @@ class _CartPageState extends State<CartPage> {
       }).toList();
       titleChildren.add(
         GestureDetector(
+            behavior: HitTestBehavior.opaque,
           child: Container(
+            height: 55,
             margin: EdgeInsets.only(right: 10),
             child: cartModel.isSelectCustomer(customer)
-                ? Icon(Icons.check_circle, color: Colors.red)
-                : Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                ? Icon(Icons.check_circle, color: Colors.red, size: 22)
+                : Icon(Icons.radio_button_unchecked, color: Colors.grey, size: 22),
           ),
           onTap: () => _selectCustomer(cartModel, customer),
         ),
@@ -159,8 +165,8 @@ class _CartPageState extends State<CartPage> {
                 child: Container(
                   margin: EdgeInsets.only(right: 10),
                   child: cartModel.isSelect(customer, product)
-                      ? Icon(Icons.check_circle, color: Colors.red)
-                      : Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                      ? Icon(Icons.check_circle, color: Colors.red, size: 22,)
+                      : Icon(Icons.radio_button_unchecked, color: Colors.grey, size: 22,),
                 ),
                 onTap: () => _selectProduct(cartModel, customer, product),
               ),

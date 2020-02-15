@@ -63,6 +63,7 @@ class CartModel extends ChangeNotifier {
 
   checkAllSelected() {
     return _isAllSelected = allCartInfoMap != null &&
+        selectedCartInfoMap.isNotEmpty &&
         MapEquality(values: ListEquality())
             .equals(selectedCartInfoMap, allCartInfoMap);
   }
