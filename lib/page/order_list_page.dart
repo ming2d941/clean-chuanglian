@@ -78,7 +78,7 @@ class _OrderListPageState extends State<OrderListPage> {
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: _buildList(
-                    orderModel, orderModel.getData(int.parse(item['route']))),
+                    orderModel, item, orderModel.getData(int.parse(item['route']))),
               );
             }).toList(),
           );
@@ -89,44 +89,49 @@ class _OrderListPageState extends State<OrderListPage> {
     widget.orderType = OrderPageType.values[index];
   }
 
-  _buildList(OrderModel orderModel, List<OrderInfo> list) {
-    return ListView.separated(
-      shrinkWrap: true,
-      //physics: NeverScrollableScrollPhysics(),
-      itemCount: list.length,
-      itemBuilder: (BuildContext context, int index) {
-        OrderInfo _current = list[index];
-        return Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: ListTile(
-            onTap: () {
-              ProviderConfig.getInstance()
-                  .goOrderDetail(context, _current, widget.orderType);
+  _buildList(OrderModel orderModel,Map<String, dynamic> item, List<OrderInfo> list) {
+    return list == null || list.isEmpty
+        ? Align(
+              alignment: Alignment.center,
+              child: Text('没有${item['title']}的订单...'),
+            )
+        : ListView.separated(
+            shrinkWrap: true,
+            //physics: NeverScrollableScrollPhysics(),
+            itemCount: list.length,
+            itemBuilder: (BuildContext context, int index) {
+              OrderInfo _current = list[index];
+              return Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: ListTile(
+                  onTap: () {
+                    ProviderConfig.getInstance()
+                        .goOrderDetail(context, _current, widget.orderType);
+                  },
+                  title: _current.customer.defaultTitleRow(), //new flag
+                  subtitle: Text(formatDate(_current.startTime)),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      orderModel.delOrder(_current);
+                    },
+                    child: Icon(
+                      Icons.delete_outline,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+              );
             },
-            title: _current.customer.defaultTitleRow(), //new flag
-            subtitle: Text(formatDate(_current.startTime)),
-            trailing: GestureDetector(
-              onTap: () {
-                orderModel.delOrder(_current);
-              },
-              child: Icon(
-                Icons.delete_outline,
-                color: Colors.black54,
-              ),
-            ),
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: EdgeInsets.only(left: 15, right: 15),
-          child: Divider(
-            height: 2.0,
-            color: Colors.blueGrey,
-          ),
-        );
-      },
-    );
+            separatorBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: Divider(
+                  height: 2.0,
+                  color: Colors.blueGrey,
+                ),
+              );
+            },
+          );
   }
 
   @override

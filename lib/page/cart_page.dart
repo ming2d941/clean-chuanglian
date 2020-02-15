@@ -19,6 +19,9 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Consumer<CartModel>(builder: (context, cartModel, child) {
       return Scaffold(
+          appBar: new AppBar(
+            title: new Text("购物车"),
+          ),
           backgroundColor: Colors.grey[90],
           body: _isCartEmpty(cartModel)
               ? _showCartEmpty(cartModel)
