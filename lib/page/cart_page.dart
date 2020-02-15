@@ -4,6 +4,7 @@ import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/page/order_list_page.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
+import 'package:clean_service/viewmodel/main_srceen_model.dart';
 import 'package:clean_service/viewmodel/order_model.dart';
 import 'package:clean_service/widget/loading.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +20,20 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CartModel>(builder: (context, cartModel, child) {
-      return Scaffold(
-          appBar: new AppBar(
-            title: new Text("购物车"),
-          ),
-          backgroundColor: Colors.grey[90],
-          body: _isCartEmpty(cartModel)
-              ? _showCartEmpty(cartModel)
-              : _showCartContent(cartModel));
+      return Consumer<MainScreenModel>(
+          builder: (context, mainScreenModel, child) {
+            print('@@@ ${mainScreenModel.customerController.current.name}');
+            bool isPersonal = mainScreenModel.customerController.current.type
+                == CustomerType.personal;
+            return Scaffold(
+                appBar: new AppBar(
+                  title: new Text("购物车"),
+                ),
+                backgroundColor: Colors.grey[90],
+                body: isPersonal || _isCartEmpty(cartModel)
+                    ? _showCartEmpty(cartModel)
+                    : _showCartContent(cartModel));
+          });
     });
   }
 

@@ -29,7 +29,6 @@ class MainScreenModel extends ChangeNotifier {
 
   setCurrentTab(int index) {
     if (_currentTabIndex == index) return;
-    print('@@@ setCurrentTab $index');
     _currentTabIndex = index;
 
     notifyListeners();
