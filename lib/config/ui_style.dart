@@ -55,6 +55,13 @@ class AppTextStyle {
     color: Colors.white,
   );
 
+  static const text_send = const TextStyle(
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    fontSize: 17.0,
+    color: Colors.blue,
+  );
+
   static const title = const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 24.0,

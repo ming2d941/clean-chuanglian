@@ -430,7 +430,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.greenAccent,
+                    color: Colors.blue,
                     borderRadius: new BorderRadius.only(
                         topLeft: const Radius.circular(30.0),
                         bottomLeft: const Radius.circular(30.0),
@@ -453,14 +453,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.greenAccent,
+                    color: Colors.grey[200],
                     borderRadius: new BorderRadius.only(
                         topLeft: const Radius.circular(30.0),
                         bottomLeft: const Radius.circular(30.0),
                         topRight: const Radius.circular(30.0),
                         bottomRight: const Radius.circular(30.0))),
                 alignment: Alignment.center,
-                child: Text('发送', style: AppTextStyle.text_regular_17),
+                child: Text('发送', style: AppTextStyle.text_send),
               ),
             ),
             flex: 2,

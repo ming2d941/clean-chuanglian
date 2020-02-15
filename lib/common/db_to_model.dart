@@ -78,9 +78,8 @@ formatBizNoByTime(num time) {
 }
 
 sendBackDate(num time) {
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt());
-  date.add(Duration(days: 1));
-  String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt() + Duration(days: 1).inMilliseconds);
+  String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')}";
   return timestamp;
 }
 

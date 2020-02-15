@@ -77,8 +77,8 @@ class _OrderListPageState extends State<OrderListPage> {
                 alignment: Alignment.topCenter,
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: _buildList(
-                    orderModel, item, orderModel.getData(int.parse(item['route']))),
+                child: _buildList(orderModel, item,
+                    orderModel.getData(int.parse(item['route']))),
               );
             }).toList(),
           );
@@ -89,12 +89,13 @@ class _OrderListPageState extends State<OrderListPage> {
     widget.orderType = OrderPageType.values[index];
   }
 
-  _buildList(OrderModel orderModel,Map<String, dynamic> item, List<OrderInfo> list) {
+  _buildList(
+      OrderModel orderModel, Map<String, dynamic> item, List<OrderInfo> list) {
     return list == null || list.isEmpty
         ? Align(
-              alignment: Alignment.center,
-              child: Text('没有${item['title']}的订单...'),
-            )
+            alignment: Alignment.center,
+            child: Text('没有${item['title']}的订单...'),
+          )
         : ListView.separated(
             shrinkWrap: true,
             //physics: NeverScrollableScrollPhysics(),
@@ -112,7 +113,7 @@ class _OrderListPageState extends State<OrderListPage> {
                   subtitle: Text(formatDate(_current.startTime)),
                   trailing: GestureDetector(
                     onTap: () {
-                      orderModel.delOrder(_current);
+                      _onDeletePress(orderModel, _current);
                     },
                     child: Icon(
                       Icons.delete_outline,
@@ -138,6 +139,31 @@ class _OrderListPageState extends State<OrderListPage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onDeletePress(OrderModel orderModel, OrderInfo current) async {
+
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text('注意'),
+          content: Text('确认要删除${formatDate(current.startTime)}开始的${current.customer.name}的订单吗？'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('取消'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text('确定'),
+              onPressed: () {
+                orderModel.delOrder(current);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ));
   }
 }
 

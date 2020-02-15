@@ -128,7 +128,9 @@ class _HomePageState extends State<HomePage> {
           Flexible(
             fit: FlexFit.tight,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                toast("建设中，敬请期待...");
+              },
               child: Card(
                 color: Colors.grey[90],
                 child: Container(

@@ -1,3 +1,4 @@
+import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/config/provider_config.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/page/order_list_page.dart';
@@ -83,7 +84,7 @@ class _CartPageState extends State<CartPage> {
                       width: 70,
                       margin: EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                          color: Colors.greenAccent,
+                          color: Colors.blue,
                           borderRadius: new BorderRadius.only(
                               topLeft: const Radius.circular(21.0),
                               bottomLeft: const Radius.circular(21.0),
@@ -204,7 +205,7 @@ class _CartPageState extends State<CartPage> {
                           SizedBox(
                             width: 5,
                           ),
-                          Text('2020-2-8',
+                          Text(sendBackDate(currentTimeMillis()),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
