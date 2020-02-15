@@ -24,7 +24,7 @@ class Preference {
     await prefs.setString(KEY_ADMIN_PATH, name);
   }
 
-  static getAdminSignPath() async {
+  static Future<String> getAdminSignPath() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(KEY_ADMIN_PATH);
   }

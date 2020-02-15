@@ -59,7 +59,7 @@ class ProviderConfig {
           value: preloadDataController.orderModel,
         ),
       ],
-      child: OrderDetailPage(order, curPageType),
+      child: OrderDetailPage(OrderDetail(order, curPageType)),
     );
   }
 

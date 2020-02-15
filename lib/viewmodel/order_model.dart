@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:clean_service/common/database_provider.dart';
 import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/page/order_list_page.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signature_view/flutter_signature_view.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class OrderModel extends ChangeNotifier {
-
   List<OrderInfo> allOrders;
   List<OrderInfo> prepareOrders;
   List<OrderInfo> doingOrders;
@@ -21,7 +25,8 @@ class OrderModel extends ChangeNotifier {
     doneOrders = List<OrderInfo>();
   }
 
-  Future<void> createOrder(Map<Customer, List<Product>> selectedCartInfoMap) async {
+  Future<void> createOrder(
+      Map<Customer, List<Product>> selectedCartInfoMap) async {
     if (selectedCartInfoMap == null || selectedCartInfoMap.isEmpty) {
       return;
     }
@@ -58,15 +63,18 @@ class OrderModel extends ChangeNotifier {
       doneOrders.removeWhere((element) => element.id == order.id);
     }
     await DBProvider.db.updateOrderItem(order);
+    sortAllArray();
     notifyListeners();
   }
 
   delOrder(OrderInfo order) async {
-    allOrders.removeWhere((item)=> order == item);
-    prepareOrders.removeWhere((item)=> order == item);
-    doingOrders.removeWhere((item)=> order == item);
+    allOrders.removeWhere((item) => order.id == item.id);
+    prepareOrders.removeWhere((item) => order.id == item.id);
+    doingOrders.removeWhere((item) => order.id == item.id);
 
     await DBProvider.db.delOrder(order.id);
+
+    sortAllArray();
     notifyListeners();
   }
 
@@ -87,10 +95,7 @@ class OrderModel extends ChangeNotifier {
       }
     });
 
-    allOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
-    prepareOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
-    doingOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
-    doneOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
+    sortAllArray();
   }
 
   void setCurrentPage(int pageIndex) {
@@ -98,7 +103,6 @@ class OrderModel extends ChangeNotifier {
     currentPageIndex = pageIndex;
     notifyListeners();
   }
-
 
   List<OrderInfo> getData(int type) {
     print('@@@@ getData $type');
@@ -108,25 +112,121 @@ class OrderModel extends ChangeNotifier {
       case OrderPageType.unRegister:
         orders = prepareOrders;
         break;
-        case OrderPageType.doing:
-          orders = doingOrders;
+      case OrderPageType.doing:
+        orders = doingOrders;
         break;
-        case OrderPageType.done:
-          orders = doneOrders;
+      case OrderPageType.done:
+        orders = doneOrders;
         break;
-        case OrderPageType.all:
-          orders = allOrders;
+      case OrderPageType.all:
+        orders = allOrders;
         break;
     }
     return orders;
   }
+
+  void sortAllArray() {
+    allOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
+    prepareOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
+    doingOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
+    doneOrders.sort((a, b) => (b.startTime).compareTo(a.startTime));
+  }
+}
+
+class OrderDetail {
+  final OrderInfo order;
+
+  OrderPageType curPageType;
+
+  OrderDetail(this.order, this.curPageType);
+
+  mainButtonText() {
+    String text;
+    if (order.status == OrderStatus.prepare) {
+      text = '确定';
+    } else if (order.status == OrderStatus.doing) {
+      text = '完成';
+    } else if (order.status == OrderStatus.done) {
+      text = '确定';
+    } else {
+      text = '好的';
+    }
+    return text;
+  }
+
+  customerName() {
+    return order.customer.name;
+  }
+
+  startDate() {
+    return formatDate(order.startTime);
+  }
+
+  isDoingStatus() {
+    return order.status == OrderStatus.doing;
+  }
+
+  isDoneStatus() {
+    return order.status == OrderStatus.done;
+  }
+
+  isRegisterStatus() {
+    return order.status == OrderStatus.prepare;
+  }
+
+  isFinishedStatus() {
+    return order.status == OrderStatus.finished;
+  }
+
+  subTile() {
+    String text;
+    if (isDoneStatus() || isFinishedStatus()) {
+      text = '服务结算单';
+    } else {
+      text = '登记表';
+    }
+    return text;
+  }
+
+  saveOrder(OrderModel orderModel, SignatureView signatureView) async {
+    try {
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      final dir = join(documentsDirectory.path, 'unregister_image');
+      if (!await Directory(dir).exists()) {
+        await Directory(dir).create(recursive: true);
+      }
+      final path = join(dir, '${order.startTime}_${order.id}.png');
+      File file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+      await file.create();
+      file.writeAsBytes(await signatureView?.exportBytes());
+      order.signatureCustomer = file.path;
+      if (isDoneStatus()) {
+        order.endTime = currentTimeMillis();
+      }
+      print('@@@ ${order.signatureCustomer}');
+    } catch (e) {
+      print(e);
+    }
+
+    await orderModel.updateOrder(order);
+  }
+
+  String getBackDate() {
+    if (isFinishedStatus()) {
+      return "预计送回时间：${formatDate(order.endTime)}";
+    }
+    return "预计送回时间：${formatDate(order.startTime + Duration(days: 1).inMilliseconds)}";
+
+  }
 }
 
 class OrderInfo {
-
   int id;
 
-  int bizId;
+  String bizId;
 
   Customer customer;
 
@@ -138,18 +238,25 @@ class OrderInfo {
 
   num endTime = 0.0;
 
-  String signatureImage = '';
+  int evaluateSpeed = 5;
+  int evaluateQuality = 5;
+  int evaluateConfig = 5;
+  int evaluateMaintain = 5;
+  int evaluateServer = 5;
+
+  String signatureCustomer = '';
+  String signatureServer = '';
 
   String orderImage = '';
 
   OrderStatus nextStatus() {
     var statusList = OrderStatus.values;
     int next = status.index + 1;
-    return next >= statusList.length ? OrderStatus.done : statusList[next];
+    return next >= statusList.length ? OrderStatus.finished : statusList[next];
   }
 
   String get productJson {
-    if (products == null || products.isEmpty){
+    if (products == null || products.isEmpty) {
       return null;
     }
     String json = '[';
@@ -174,7 +281,7 @@ class OrderInfo {
   }
 
   @override
-  int get hashCode => hashValues(id, customer,products, startTime);
+  int get hashCode => hashValues(id, customer, products, startTime);
 
   @override
   String toString() {
@@ -182,4 +289,4 @@ class OrderInfo {
   }
 }
 
-enum OrderStatus { prepare, doing, done }
+enum OrderStatus { prepare, doing, done, finished }

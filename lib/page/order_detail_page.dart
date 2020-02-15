@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:clean_service/common/application.dart';
 import 'package:clean_service/common/db_to_model.dart';
 import 'package:clean_service/config/ui_style.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
@@ -18,10 +19,9 @@ import 'package:screenshot/screenshot.dart';
 import 'order_list_page.dart';
 
 class OrderDetailPage extends StatefulWidget {
-  final OrderInfo order;
-  final OrderPageType curPageType;
+  final OrderDetail orderDetail;
 
-  const OrderDetailPage(this.order, this.curPageType);
+  const OrderDetailPage(this.orderDetail);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -34,20 +34,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   var contentKey = GlobalKey<ScaffoldState>();
   bool isExpanded = false;
 
-  GlobalKey<State<StatefulWidget>> _globalKey;
   SignatureView _signatureView;
   bool _isShowClear = true;
-  bool _hadSigned = false;
-  String _mianBtnText;
   ScreenshotController screenshotController = ScreenshotController();
   String _signatureData;
 
   @override
   void initState() {
     super.initState();
-    _globalKey = GlobalKey();
-    _mianBtnText = _mainButtonText();
-    _hadSigned = hasSignedInfo();
   }
 
   @override
@@ -66,7 +60,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       },
     );
 
-    print('${widget.order.signatureImage}');
+    print('@@@@ build ${widget.orderDetail.order.signatureCustomer}');
     return Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
@@ -91,12 +85,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "NO.${widget.order.id}",
+                              "NO.${widget.orderDetail.order.bizId}",
                               style: AppTextStyle.order_no,
                             ),
                           ),
                           Text(
-                            "聊城市脑科医院\n窗、围帘送洗登记表",
+                            "聊城市脑科医院\n窗、围帘送洗${widget.orderDetail.subTile()}",
                             textAlign: TextAlign.center,
                             style: AppTextStyle.title,
                           ),
@@ -105,7 +99,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             child: Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "科室(病房)：${widget.order.customer.name}",
+                                  "科室(病房)：${widget.orderDetail.customerName()}",
                                 )),
                           ),
                           Container(
@@ -113,16 +107,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             child: Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "送洗时间：${formatDate(widget.order.startTime)}",
+                                  "送洗时间：${widget.orderDetail.startDate()}",
                                 )),
                           ),
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Container(
                                 alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "预计送回时间：${formatDate(widget.order.startTime)}",
-                                )),
+                                child: Text(widget.orderDetail.getBackDate())),
                           ),
                           Container(
                               padding: EdgeInsets.fromLTRB(0, 25, 0, 5),
@@ -157,61 +149,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               color: Colors.grey,
                             ),
                           ),
-                          ...widget.order.products
+                          ...widget.orderDetail.order.products
                               .map((e) => _productList(e))
                               .toList(),
                           _buildSignView(),
-                          Visibility(
-                            visible: !_hadSigned,
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  padding:
-                                  const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    '科室负责人签字',
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: _width,
-                                  height: _height / 3,
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    decoration: new BoxDecoration(
-                                      border: new Border.all(
-                                          color: Colors.black38, width: 1),
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        widget.order.signatureImage.isEmpty
-                                            ? _signatureView
-                                            : Image.file(File(
-                                            widget.order.signatureImage)),
-                                        Visibility(
-                                          //!_signatureView.isEmpty nullpoint exception
-                                          //https://github.com/flutter/flutter/issues/22029
-                                          visible: _isShowClear,
-                                          child: GestureDetector(
-                                            child: Container(
-                                              alignment: Alignment.topRight,
-                                              padding: EdgeInsets.fromLTRB(
-                                                  15, 15, 15, 8),
-                                              child: Icon(
-                                                Icons.delete_sweep,
-                                                color: Colors.black38,
-                                              ),
-                                            ),
-                                            onTap: _clear,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          _writeSignatureArea(),
                         ]),
                       ),
                     ),),
@@ -288,25 +230,33 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 children: <Widget>[
                   Flexible(
                     flex: 1,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('维保人员：')),
-                        Image.file(File(widget.order.signatureImage))
-                      ],
-                    ),
+                    child: FutureBuilder(future: Preference.getAdminSignPath(),
+                      builder: (context, snapshot) {
+                        return snapshot.hasData ? Column(
+                          children: <Widget>[
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text('维保人员：')),
+                            Container(width: 200,
+                              height: 70,
+                            child: Image.file(File(snapshot.data)),),
+                          ],
+                        ) : Container();
+                      },),
                   ),
                   Flexible(
                     flex: 1,
                     child: Visibility(
-                      visible: _hadSigned,
+                      visible: widget.orderDetail.isDoingStatus() ||
+                          widget.orderDetail.isFinishedStatus(),
                       child: Column(
                         children: <Widget>[
                           Container(
-                              alignment: Alignment.centerLeft,
+                              alignment: Alignment.topLeft,
                               child: Text('科室负责人：')),
-                          Image.file(File(widget.order.signatureImage))
+                          Container(width: 200,
+                              height: 70,
+                              child: Image.file(File(widget.orderDetail.order.signatureCustomer))),
                         ],
                       ),
                     ),
@@ -316,20 +266,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ],
       ),
     );
-  }
-
-  _mainButtonText() {
-    String text;
-    if (widget.curPageType == OrderPageType.unRegister) {
-      text = '确定';
-    } else if (widget.curPageType == OrderPageType.doing) {
-      text = '完成';
-    } else if (widget.curPageType == OrderPageType.done) {
-      text = '确定';
-    } else {
-      text = '好的';
-    }
-    return text;
   }
 
   _sendOrder() async {
@@ -352,37 +288,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             text: '正在保存订单..',
           );
         });
-    print('@@@ hasSignedInfo ${hasSignedInfo()}');
-    try {
-      Directory documentsDirectory = await getApplicationDocumentsDirectory();
-      final dir = join(documentsDirectory.path, 'unregister_image');
-      if (!await Directory(dir).exists()) {
-        await Directory(dir).create(recursive: true);
-      }
-      final path =
-          join(dir, '${widget.order.startTime}_${widget.order.id}.png');
-      File file = File(path);
-      if (await file.exists()) {
-        await file.delete();
-      }
-      await file.create();
-      file.writeAsBytes(await _signatureView?.exportBytes());
-      widget.order.signatureImage = file.path;
-      print('@@@ ${widget.order.signatureImage}');
-    } catch (e) {
-      print(e);
-    }
-
-    await Provider.of<OrderModel>(ctx).updateOrder(widget.order);
+    await widget.orderDetail.saveOrder(Provider.of<OrderModel>(ctx), _signatureView);
+    imageCache.clear();
     setState(() {
-      _hadSigned = true;
     });
     Navigator.pop(ctx);
   }
 
   _onPressSure(BuildContext ctx) async {
-    if (widget.curPageType == OrderPageType.unRegister ||
-        widget.curPageType == OrderPageType.done) {
+    if (widget.orderDetail.isRegisterStatus() ||
+        widget.orderDetail.isDoneStatus()) {
       bool noSignData = _signatureData == null || _signatureData.isEmpty;
       if (noSignData) {
         Fluttertoast.showToast(
@@ -394,14 +309,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             textColor: Colors.white);
         return;
       }
-      if (!_hadSigned) {
-        showAlert(ctx, '您确定签名没问题了吗？', () {
-          _saveOrder(ctx);
-        });
-      }
-    } else if (widget.curPageType == OrderPageType.doing) {
-      showAlert(ctx, '您确定要送回吗？', () {
-        Navigator.pop(ctx);
+      showAlert(ctx, '您确定签名没问题了吗？', () {
+        _saveOrder(ctx);
+      });
+    } else if (widget.orderDetail.isDoingStatus()) {
+      showAlert(ctx, '您确定清洗完毕，需要送回吗？', () {
+        _saveOrder(ctx);
       });
     } else {
       showAlert(ctx, '您确定要关闭此页面吗？', () {
@@ -454,7 +367,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         topRight: const Radius.circular(30.0),
                         bottomRight: const Radius.circular(30.0))),
                 alignment: Alignment.center,
-                child: Text(_mianBtnText, style: AppTextStyle.text_regular_17),
+                child: Text(widget.orderDetail.mainButtonText(), style: AppTextStyle.text_regular_17),
               ),
             ),
             flex: 4,
@@ -486,8 +399,50 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  bool hasSignedInfo() {
-    return widget.order.signatureImage != null &&
-        widget.order.signatureImage.isNotEmpty;
+  _writeSignatureArea() {
+    return Visibility(
+      visible: widget.orderDetail.isRegisterStatus() ||
+      widget.orderDetail.isDoneStatus(),
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding:
+            const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '科室负责人签字',
+            ),
+          ),
+          SizedBox(
+            width: _width,
+            height: _height / 3,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              decoration: new BoxDecoration(
+                border: new Border.all(
+                    color: Colors.black38, width: 1),
+              ),
+              child: Stack(
+                children: [
+                  _signatureView,
+                  GestureDetector(
+                      child: Container(
+                        alignment: Alignment.topRight,
+                        padding: EdgeInsets.fromLTRB(
+                            15, 15, 15, 8),
+                        child: Icon(
+                          Icons.delete_sweep,
+                          color: Colors.black38,
+                        ),
+                      ),
+                      onTap: _clear,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

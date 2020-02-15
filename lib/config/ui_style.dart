@@ -2,6 +2,18 @@
 import 'package:flutter/material.dart';
 
 class AppTextStyle {
+  static const text_common_black= const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 13.0,
+    color: Colors.black,
+  );
+
+  static const text_common_white= const TextStyle(
+    fontStyle: FontStyle.normal,
+    fontSize: 13.0,
+    color: Colors.white,
+  );
+
   static const text_regular_15 = const TextStyle(
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,

@@ -35,19 +35,19 @@ class DBProvider {
           " $NAME TEXT,"
           " $PARENT_ID INTEGER,"
           " $TYPE INTEGER"
-          ")");
+          ");");
       await db.execute("CREATE TABLE $TABLE_PRODUCT("
           "$ID INTEGER PRIMARY KEY,"
           " $NAME TEXT,"
           " $COUNT INTEGER,"
           " $USE_TIME INTEGER,"
           " $TYPE INTEGER"
-          ")");
+          ");");
       await db.execute("CREATE TABLE $TABLE_CUSTOMER_PRODUCT("
           "$ID INTEGER PRIMARY KEY,"
           " $CUSTOMER_ID INTEGER,"
           " $PRODUCT_ID INTEGER"
-          ")");
+          ");");
       await db.execute("CREATE TABLE $TABLE_CART("
           "$ID INTEGER PRIMARY KEY,"
           " $CUSTOMER_ID INTEGER,"
@@ -55,18 +55,24 @@ class DBProvider {
           " $COUNT INTEGER,"
           " $START_TIME REAL,"
           " $END_TIME REAL"
-          ")");
+          ");");
 
       await db.execute("CREATE TABLE $TABLE_ORDER("
           "$ID INTEGER PRIMARY KEY,"
           " $CUSTOMER_ID INTEGER,"
           " $PRODUCTS TEXT,"
           " $ORDER_STATUS INTEGER,"
-          " $SIGNATURE_PATH TEXT,"
+          " $CUSTOMER_SIGNATURE TEXT,"
+          " $SERVER_SIGNATURE TEXT,"
           " $ORDER_IMAGE_PATH TEXT,"
           " $START_TIME REAL,"
-          " $END_TIME REAL"
-          ")");
+          " $END_TIME REAL,"
+          " $EVALUATE_SPEED INTEGER DEFAULT 5,"
+          " $EVALUATE_QUALITY INTEGER DEFAULT 5,"
+          " $EVALUATE_CONFIG INTEGER DEFAULT 5,"
+          " $EVALUATE_MAINTAIN INTEGER DEFAULT 5,"
+          " $EVALUATE_SERVER INTEGER DEFAULT 5"
+          ");");
 
       await initCustomerTable(db);
     });
@@ -389,9 +395,17 @@ class DBProvider {
         orderInfo.status = OrderStatus.values[item[ORDER_STATUS]];
         print('@@@getAllOrderInfo--> status ${orderInfo.status}');
         orderInfo.startTime = item[START_TIME];
-        orderInfo.signatureImage = item[SIGNATURE_PATH];
+        orderInfo.endTime = item[END_TIME];
+        orderInfo.signatureCustomer = item[CUSTOMER_SIGNATURE];
+        orderInfo.signatureServer = item[SERVER_SIGNATURE];
         orderInfo.orderImage = item[ORDER_IMAGE_PATH];
         orderInfo.products = toProductList(item[PRODUCTS]);
+        orderInfo.bizId = 'nk_${orderInfo.startTime}_${orderInfo.id}';
+        orderInfo.evaluateSpeed = item[EVALUATE_SPEED];
+        orderInfo.evaluateQuality = item[EVALUATE_QUALITY];
+        orderInfo.evaluateConfig = item[EVALUATE_CONFIG];
+        orderInfo.evaluateMaintain = item[EVALUATE_MAINTAIN];
+        orderInfo.evaluateServer = item[EVALUATE_SERVER];
         print('@@@getAllOrderInfo --- $orderInfo');
         allOrders.add(orderInfo);
       }

@@ -37,8 +37,14 @@ Map<String, dynamic> toOrderMap(OrderInfo orderInfo) {
     ORDER_STATUS: orderInfo.status.index,
     START_TIME: orderInfo.startTime,
     END_TIME: orderInfo.endTime,
-    SIGNATURE_PATH: orderInfo.signatureImage,
+    CUSTOMER_SIGNATURE: orderInfo.signatureCustomer,
+    SERVER_SIGNATURE: orderInfo.signatureServer,
     ORDER_IMAGE_PATH: orderInfo.orderImage,
+    EVALUATE_SPEED: orderInfo.evaluateSpeed,
+    EVALUATE_QUALITY: orderInfo.evaluateQuality,
+    EVALUATE_CONFIG: orderInfo.evaluateConfig,
+    EVALUATE_MAINTAIN: orderInfo.evaluateMaintain,
+    EVALUATE_SERVER: orderInfo.evaluateServer,
   };
 }
 
@@ -59,6 +65,13 @@ List<Product> toProductList(String productJson) {
 
 formatDate(num time) {
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt());
+  String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+  return timestamp;
+}
+
+sendBackDate(num time) {
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time.toInt());
+  date.add(Duration(days: 1));
   String timestamp = "${date.year.toString()}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
   return timestamp;
 }
