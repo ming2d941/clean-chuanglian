@@ -1,3 +1,4 @@
-# Clean ChuangLian
+# Clean Service
 
-A new Flutter project for LiBo.
+This is a Flutter app for my classmate LiBo, the app is used to provid clean service.
+
