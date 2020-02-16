@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             clipper: WaveClipper(),
             child: Container(
               width: _width,
-              height: 200,
+              height: 210,
               child: Stack(
                 children: <Widget>[
                   Image.asset('assets/images/clean_water.png',
