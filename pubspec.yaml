@@ -41,6 +41,7 @@ dependencies:
   shared_preferences: ^0.5.6+1
   flutter_rating_bar: ^3.0.1+1
   permission_handler: ^4.2.0+hotfix.3
+  get_ip: ^0.4.0
 #  address_picker: ^0.0.1
 #  flutter_jd_address_selector:
 #    git:
@@ -68,6 +69,8 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/htmls/
+    - assets/htmls/index.html
     - assets/images/chuanglian.jpeg
     - assets/images/gelian.jpeg
     - assets/images/login_bg.png

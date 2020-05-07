@@ -1,4 +1,5 @@
 import 'package:clean_service/common/database_provider.dart';
+import 'package:clean_service/server/server.dart';
 import 'package:clean_service/viewmodel/cart_model.dart';
 import 'package:clean_service/viewmodel/customer_info.dart';
 import 'package:clean_service/viewmodel/main_srceen_model.dart';
@@ -15,6 +16,8 @@ class PreloadDataController {
     mainScreenModel = MainScreenModel();
     cartModel = CartModel();
     orderModel = OrderModel();
+
+    HttpSever().bind();
   }
 
   Future<void> preLoadData() async {
