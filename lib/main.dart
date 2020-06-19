@@ -9,15 +9,16 @@ import 'package:provider/provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-//  TestWidgetsFlutterBinding.ensureInitialized();
-//  runAppSpectorr();
+  //TestWidgetsFlutterBinding.ensureInitialized();
+//  runAppSpector();
   runApp(MyApp());
 }
 
 void runAppSpector() {
   var config = new Config();
 //  config.iosApiKey = "Your iOS API_KEY";
-  config.androidApiKey = "android_MTY0NmFiY2UtYTVmZC00MWMzLWIwYjctM2JhNzBjYTc3ODg0";
+//  config.androidApiKey = "android_MTY0NmFiY2UtYTVmZC00MWMzLWIwYjctM2JhNzBjYTc3ODg0";
+  config.androidApiKey = "android_ZjE4M2E3ODYtMGFiMi00NjRjLWIwZDUtNTVjOTk2YjlhZTgy";
   AppSpectorPlugin.run(config);
 }
 

@@ -18,15 +18,16 @@ class DBProvider {
   Future<Database> get database async {
     if (_database != null) return _database;
 
-    _database = await initDB();
+    _database = await _initDB();
 
     return _database;
   }
 
-  initDB() async {
+  _initDB() async {
     print('@@@ initDB');
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'clean_business.db');
+//    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+//    final path = join(documentsDirectory.path, 'clean_business.db');
+    var path = await getDatabasesPath() + "/clean_business.db";
 
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {

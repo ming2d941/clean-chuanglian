@@ -69,6 +69,18 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/console/
+#    - assets/console/favicon.ico
+    - assets/console/assets/
+    - assets/console/assets/fonts/
+    - assets/console/assets/fonts/MaterialIcons-Regular.ttf
+#    - assets/console/assets/AssetManifest.json
+#    - assets/console/assets/FontManifest.json
+    - assets/console/assets/packages/
+    - assets/console/assets/packages/cupertino_icons/
+    - assets/console/assets/packages/cupertino_icons/assets/
+#    - assets/console/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+    - assets/console/index.html
     - assets/htmls/
     - assets/htmls/index.html
     - assets/images/chuanglian.jpeg
